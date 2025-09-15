@@ -23,21 +23,17 @@ args = "Frontend"
 name = "Frontend"
 author = "agent"
 
-[workflows.workflow.metadata]
-outputType = "webview"
-
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd AstroReplit && NODE_ENV=production node --env-file=.env dist/index.js"
+args = "cd AstroOracle && NODE_ENV=development npm run dev"
 waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
 
 [[ports]]
 localPort = 5000
 externalPort = 80
-
-[[ports]]
-localPort = 42475
-externalPort = 3000
 
 [deployment]
 deploymentTarget = "autoscale"
