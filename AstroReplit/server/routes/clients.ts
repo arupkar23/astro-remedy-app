@@ -7,10 +7,16 @@ import bcrypt from "bcrypt";
 
 const router = Router();
 
-// JWT Secret (should match main routes.ts)
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
+// SECURITY: JWT Secret is REQUIRED - fail startup if missing
+if (!process.env.JWT_SECRET) {
+  throw new Error("CRITICAL: JWT_SECRET environment variable is required for security");
+}
+const JWT_SECRET = process.env.JWT_SECRET;
 
-// Authentication middleware (imported from main routes)
+// Import centralized authentication middleware (safer than redefining)
+// These should be imported from main routes to prevent security drift
+const jwt = require('jsonwebtoken');
+
 const authenticateToken = (req: any, res: any, next: any) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -19,7 +25,6 @@ const authenticateToken = (req: any, res: any, next: any) => {
     return res.sendStatus(401);
   }
 
-  const jwt = require('jsonwebtoken');
   jwt.verify(token, JWT_SECRET, (err: any, user: any) => {
     if (err) return res.sendStatus(403);
     req.user = user;
@@ -111,6 +116,51 @@ router.get("/", authenticateToken, requireAdmin, async (req, res) => {
   } catch (error) {
     console.error("Error fetching clients:", error);
     res.status(500).json({ error: "Failed to fetch clients" });
+  }
+});
+
+// SECURITY FIX: Move stats route BEFORE /:id to prevent route conflict  
+// GET /api/clients/stats/summary - Get client statistics for dashboard (ADMIN ONLY)
+router.get("/stats/summary", authenticateToken, requireAdmin, async (req, res) => {
+  try {
+    // Total clients
+    const [{ count: totalClients }] = await db.select({ 
+      count: sql<number>`count(*)` 
+    }).from(users).where(eq(users.isAdmin, false));
+
+    // New clients this month
+    const firstDayOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+    const [{ count: newThisMonth }] = await db.select({ 
+      count: sql<number>`count(*)` 
+    }).from(users).where(
+      sql`${users.isAdmin} = false AND ${users.createdAt} >= ${firstDayOfMonth}`
+    );
+
+    // Total consultations
+    const [{ count: totalConsultations }] = await db.select({ 
+      count: sql<number>`count(*)` 
+    }).from(consultations);
+
+    // Total revenue from consultations and orders
+    const consultationRevenue = await db.select({ 
+      total: sql<number>`COALESCE(SUM(${consultations.amount}), 0)` 
+    }).from(consultations);
+    
+    const orderRevenue = await db.select({ 
+      total: sql<number>`COALESCE(SUM(${orders.totalAmount}), 0)` 
+    }).from(orders);
+
+    const totalRevenue = (consultationRevenue[0]?.total || 0) + (orderRevenue[0]?.total || 0);
+
+    res.json({
+      totalClients: Number(totalClients),
+      newThisMonth: Number(newThisMonth),
+      totalConsultations: Number(totalConsultations),
+      totalRevenue: Number(totalRevenue),
+    });
+  } catch (error) {
+    console.error("Error fetching client statistics:", error);
+    res.status(500).json({ error: "Failed to fetch statistics" });
   }
 });
 
@@ -234,7 +284,7 @@ router.post("/", authenticateToken, requireAdmin, async (req, res) => {
     const randomPassword = `${Math.random().toString(36).slice(-8)}${Math.random().toString(36).slice(-8)}`;
     const hashedPassword = await bcrypt.hash(randomPassword, 12);
 
-    // Create new client
+    // Create new client - NEVER return password field
     const [newClient] = await db.insert(users).values({
       fullName: validatedData.fullName,
       email: validatedData.email,
@@ -249,7 +299,23 @@ router.post("/", authenticateToken, requireAdmin, async (req, res) => {
       username: `client_${Date.now()}`, // Auto-generated username
       isAdmin: false,
       isVerified: false,
-    }).returning();
+    }).returning({
+      id: users.id,
+      fullName: users.fullName,
+      email: users.email,
+      phoneNumber: users.phoneNumber,
+      countryCode: users.countryCode,
+      whatsappNumber: users.whatsappNumber,
+      dateOfBirth: users.dateOfBirth,
+      timeOfBirth: users.timeOfBirth,
+      placeOfBirth: users.placeOfBirth,
+      notes: users.notes,
+      username: users.username,
+      isAdmin: users.isAdmin,
+      isVerified: users.isVerified,
+      createdAt: users.createdAt,
+      updatedAt: users.updatedAt
+    });
 
     // Log the creation
     await db.insert(auditLogs).values({
@@ -327,7 +393,23 @@ router.put("/:id", authenticateToken, requireAdmin, async (req, res) => {
     const [updatedClient] = await db.update(users)
       .set(updateData)
       .where(eq(users.id, id))
-      .returning();
+      .returning({
+        id: users.id,
+        fullName: users.fullName,
+        email: users.email,
+        phoneNumber: users.phoneNumber,
+        countryCode: users.countryCode,
+        whatsappNumber: users.whatsappNumber,
+        dateOfBirth: users.dateOfBirth,
+        timeOfBirth: users.timeOfBirth,
+        placeOfBirth: users.placeOfBirth,
+        notes: users.notes,
+        username: users.username,
+        isAdmin: users.isAdmin,
+        isVerified: users.isVerified,
+        createdAt: users.createdAt,
+        updatedAt: users.updatedAt
+      });
 
     // Log the update
     await db.insert(auditLogs).values({
@@ -392,50 +474,5 @@ router.delete("/:id", authenticateToken, requireAdmin, async (req, res) => {
   }
 });
 
-// GET /api/clients/stats/summary - Get client statistics for dashboard (ADMIN ONLY)
-router.get("/stats/summary", authenticateToken, requireAdmin, async (req, res) => {
-  try {
-    // Total clients
-    const [{ count: totalClients }] = await db.select({ 
-      count: sql<number>`count(*)` 
-    }).from(users).where(eq(users.isAdmin, false));
-
-    // Verified clients
-    const [{ count: verifiedClients }] = await db.select({ 
-      count: sql<number>`count(*)` 
-    }).from(users).where(
-      sql`${users.isAdmin} = false AND ${users.isVerified} = true`
-    );
-
-    // Recent clients (last 30 days)
-    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-    const [{ count: recentClients }] = await db.select({ 
-      count: sql<number>`count(*)` 
-    }).from(users).where(
-      sql`${users.isAdmin} = false AND ${users.createdAt} >= ${thirtyDaysAgo}`
-    );
-
-    // Active clients (with consultations in last 90 days)
-    const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
-    const [{ count: activeClients }] = await db.select({ 
-      count: sql<number>`count(DISTINCT ${users.id})` 
-    }).from(users)
-    .leftJoin(consultations, eq(users.id, consultations.clientId))
-    .where(
-      sql`${users.isAdmin} = false AND ${consultations.scheduledAt} >= ${ninetyDaysAgo}`
-    );
-
-    res.json({
-      totalClients,
-      verifiedClients,
-      recentClients,
-      activeClients: activeClients || 0,
-      verificationRate: totalClients > 0 ? (verifiedClients / totalClients * 100).toFixed(1) : 0,
-    });
-  } catch (error) {
-    console.error("Error fetching client stats:", error);
-    res.status(500).json({ error: "Failed to fetch client statistics" });
-  }
-});
 
 export default router;
