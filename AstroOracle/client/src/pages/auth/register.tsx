@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 // AutoTranslate import removed for fast loading
 import { apiRequest } from "@/lib/queryClient";
 // Import comprehensive global phone codes for all countries worldwide (196+ countries)
-import { globalPhoneCodes } from '@/../../data/global-phone-codes';
+import { globalPhoneCodes } from '@/data/global-phone-codes';
 
 export default function Register() {
   const [, setLocation] = useLocation();

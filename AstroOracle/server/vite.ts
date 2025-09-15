@@ -22,12 +22,12 @@ export function log(message: string, source = "express") {
 export async function setupVite(app: Express, server: Server) {
   const serverOptions = {
     middlewareMode: true,
-    hmr: { 
-      server,
-      port: 5000,
-      host: "0.0.0.0"
-    },
+    hmr: false, // Disable HMR to avoid connection issues in Replit
     allowedHosts: true as const,
+    cors: {
+      origin: "*",
+      credentials: true
+    }
   };
 
   const vite = await createViteServer({

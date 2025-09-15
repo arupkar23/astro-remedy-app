@@ -48,8 +48,7 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  // For now, always serve static files instead of Vite dev mode
-  // to avoid HMR issues in Replit environment
+  // Always serve static build for better stability in Replit
   serveStatic(app);
 
   // ALWAYS serve the app on the port specified in the environment variable PORT
