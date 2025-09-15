@@ -122,11 +122,11 @@ export default function AdminClients() {
     fetchTimezones();
   }, []);
 
-  const filteredClients = clients?.filter((client: ClientProfile) => 
+  const filteredClients = clients?.filter((client: any) => 
     client.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     client.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    client.primaryPhone?.includes(searchTerm) ||
-    client.currentPhone?.includes(searchTerm) ||
+    client.phoneNumber?.includes(searchTerm) ||
+    client.whatsappNumber?.includes(searchTerm) ||
     client.placeOfBirth?.city?.toLowerCase().includes(searchTerm.toLowerCase())
   ) || [];
 
@@ -139,7 +139,8 @@ export default function AdminClients() {
         },
         body: JSON.stringify({
           ...clientData,
-          phoneNumber: clientData.primaryPhone, // Map to backend field
+          phoneNumber: clientData.primaryPhone, // Map frontend field to backend
+          notes: clientData.personalNotes, // Map frontend field to backend
         }),
       });
       
@@ -471,7 +472,7 @@ export default function AdminClients() {
                       <div className="flex items-center space-x-2">
                         <Phone className="w-4 h-4 text-primary" />
                         <span className="text-sm font-medium">Primary:</span>
-                        <span className="text-sm">{client.primaryPhone}</span>
+                        <span className="text-sm">{client.phoneNumber || client.primaryPhone}</span>
                       </div>
                       {client.whatsappNumber && (
                         <div className="flex items-center space-x-2">
@@ -565,8 +566,8 @@ export default function AdminClients() {
                                 <div><strong>Email:</strong> {client.email}</div>
                                 <div><strong>Date of Birth:</strong> {new Date(client.dateOfBirth).toLocaleDateString()}</div>
                                 <div><strong>Time of Birth:</strong> {client.timeOfBirth}</div>
-                                <div><strong>Primary Phone:</strong> {client.primaryPhone}</div>
-                                <div><strong>Current Phone:</strong> {client.currentPhone}</div>
+                                <div><strong>Primary Phone:</strong> {client.phoneNumber || client.primaryPhone}</div>
+                                <div><strong>Current Phone:</strong> {client.whatsappNumber || client.currentPhone}</div>
                                 <div><strong>WhatsApp:</strong> {client.whatsappNumber}</div>
                               </CardContent>
                             </Card>
