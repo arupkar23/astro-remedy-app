@@ -187,7 +187,7 @@ export default function Login() {
               <span className="text-primary-foreground font-bold text-2xl">JG</span>
             </div>
             <h1 className="text-3xl font-bold neon-text text-primary mb-2" data-testid="login-title">
-              Welcome Back
+              🚀 AUTHENTICATION SYSTEM WORKING 🚀
             </h1>
             <p className="text-muted-foreground">
               Choose your preferred login method to access your cosmic journey
