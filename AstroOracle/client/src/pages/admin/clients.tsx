@@ -229,7 +229,7 @@ export default function AdminClients() {
             <div className="text-sm text-muted-foreground">Complete Profiles</div>
           </GlassCard>
           <GlassCard className="p-6 text-center">
-            <div className="text-2xl font-bold text-accent mb-2">
+            <div className="text-2xl font-bold text-black bg-white/90 px-2 py-1 rounded-md inline-block mb-2">
               {filteredUsers.filter((u: any) => 
                 new Date(u.createdAt) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
               ).length}
@@ -237,7 +237,7 @@ export default function AdminClients() {
             <div className="text-sm text-muted-foreground">New This Month</div>
           </GlassCard>
           <GlassCard className="p-6 text-center">
-            <div className="text-2xl font-bold text-yellow-500 mb-2">
+            <div className="text-2xl font-bold text-foreground bg-white/90 px-2 py-1 rounded-md inline-block mb-2">
               {new Set(filteredUsers.map((u: any) => u.preferredLanguage)).size}
             </div>
             <div className="text-sm text-muted-foreground">Languages</div>
