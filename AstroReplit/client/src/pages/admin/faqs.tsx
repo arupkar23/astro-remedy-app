@@ -573,6 +573,7 @@ export default function AdminFAQs() {
           )}
         </DialogContent>
       </Dialog>
+      </div>
     </div>
   );
 }
