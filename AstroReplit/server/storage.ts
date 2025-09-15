@@ -43,9 +43,9 @@ export interface IStorage {
   updateUserStripeInfo(id: string, info: { customerId: string; subscriptionId: string }): Promise<User | undefined>;
   
   // OTP verification
-  createOtpVerification(otp: { phoneNumber: string; countryCode: string; otp: string; purpose: string; userId?: string; ipAddress?: string; userAgent?: string }): Promise<any>;
+  createOtpVerification(otp: { id?: string; phoneNumber: string; countryCode: string; otp: string; purpose: string; isUsed?: boolean; expiresAt: Date; ipAddress?: string; userAgent?: string; createdAt?: Date }): Promise<any>;
   getOtpVerification(phoneNumber: string, countryCode: string, purpose: string): Promise<any | undefined>;
-  verifyOtp(phoneNumber: string, countryCode: string, otp: string, purpose: string): Promise<boolean>;
+  verifyOtp(phoneNumber: string, countryCode: string, otp: string, purpose: string): Promise<any>;
   
   // Security events
   createSecurityEvent(event: { userId?: string; eventType: string; description: string; ipAddress?: string; userAgent?: string; riskLevel?: string; details?: any }): Promise<any>;
@@ -158,10 +158,6 @@ export interface IStorage {
   
   // Login and Authentication
   updateUserLoginInfo(userId: string, ipAddress?: string, userAgent?: string): Promise<void>;
-  
-  // OTP Verification specific methods
-  createOtpVerification(otp: { id?: string; phoneNumber: string; countryCode: string; otp: string; purpose: string; isUsed?: boolean; expiresAt: Date; ipAddress?: string; userAgent?: string; createdAt?: Date }): Promise<any>;
-  verifyOtp(phoneNumber: string, countryCode: string, otp: string, purpose: string): Promise<any>;
 }
 
 export class MemStorage implements IStorage {
@@ -236,10 +232,23 @@ export class MemStorage implements IStorage {
       placeOfBirth: "Kolkata, West Bengal, India",
       isVerified: true,
       isAdmin: true,
+      accountStatus: "active",
+      governmentId: null,
+      governmentIdType: null,
       stripeCustomerId: null,
       stripeSubscriptionId: null,
       preferredLanguage: "en",
       notes: "Master Astrologer with 18+ years of experience",
+      termsAcceptedAt: new Date(),
+      privacyAcceptedAt: new Date(),
+      disclaimerAcceptedAt: new Date(),
+      returnPolicyAcceptedAt: new Date(),
+      marketingConsent: false,
+      dataProcessingConsent: true,
+      lastLoginAt: null,
+      lastLoginIp: null,
+      failedLoginAttempts: 0,
+      lockoutUntil: null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -445,6 +454,7 @@ export class MemStorage implements IStorage {
     const user: User = { 
       ...insertUser, 
       id,
+      countryCode: insertUser.countryCode,
       email: insertUser.email || null,
       whatsappNumber: insertUser.whatsappNumber || null,
       dateOfBirth: insertUser.dateOfBirth || null,
@@ -452,10 +462,25 @@ export class MemStorage implements IStorage {
       placeOfBirth: insertUser.placeOfBirth || null,
       preferredLanguage: insertUser.preferredLanguage || "en",
       isVerified: false,
+      phoneVerified: false,
+      emailVerified: false,
       isAdmin: false,
+      accountStatus: "active",
+      governmentId: null,
+      governmentIdType: null,
       stripeCustomerId: null,
       stripeSubscriptionId: null,
       notes: null,
+      termsAcceptedAt: null,
+      privacyAcceptedAt: null,
+      disclaimerAcceptedAt: null,
+      returnPolicyAcceptedAt: null,
+      marketingConsent: false,
+      dataProcessingConsent: false,
+      lastLoginAt: null,
+      lastLoginIp: null,
+      failedLoginAttempts: 0,
+      lockoutUntil: null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -497,12 +522,19 @@ export class MemStorage implements IStorage {
     const consultation: Consultation = {
       ...insertConsultation,
       id,
+      topics: insertConsultation.topics || null,
       status: "scheduled",
       meetingId: null,
+      timerStarted: false,
+      timerStartTime: null,
+      timerEndTime: null,
+      actualDuration: null,
       notes: insertConsultation.notes || null,
+      preConsultationNotes: null,
       language: insertConsultation.language || "en",
       paymentStatus: "pending",
       paymentId: null,
+      location: insertConsultation.location || null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -694,6 +726,8 @@ export class MemStorage implements IStorage {
     const message: ChatMessage = {
       ...insertMessage,
       id,
+      messageType: insertMessage.messageType || "text",
+      fileUrl: insertMessage.fileUrl || null,
       timestamp: new Date(),
     };
     this.chatMessages.set(id, message);
@@ -712,6 +746,7 @@ export class MemStorage implements IStorage {
     const newNotification: Notification = {
       ...notification,
       id,
+      actionUrl: notification.actionUrl || null,
       isRead: false,
       createdAt: new Date(),
     };
@@ -730,8 +765,14 @@ export class MemStorage implements IStorage {
   async createAuditLog(log: { userId?: string; action: string; resourceType: string; resourceId?: string; details?: any; ipAddress?: string; userAgent?: string }): Promise<AuditLog> {
     const id = randomUUID();
     const auditLog: AuditLog = {
-      ...log,
       id,
+      userId: log.userId || null,
+      action: log.action,
+      resourceType: log.resourceType,
+      resourceId: log.resourceId || null,
+      details: log.details || null,
+      ipAddress: log.ipAddress || null,
+      userAgent: log.userAgent || null,
       timestamp: new Date(),
     };
     this.auditLogs.set(id, auditLog);
@@ -767,6 +808,9 @@ export class MemStorage implements IStorage {
     const newFaq: Faq = {
       ...faq,
       id,
+      isActive: faq.isActive ?? true,
+      keywords: faq.keywords || null,
+      priority: faq.priority || null,
       viewCount: 0,
       helpfulCount: 0,
       createdAt: new Date(),
@@ -1315,180 +1359,6 @@ export class MemStorage implements IStorage {
     }
   }
 
-  async createOtpVerification(otpData: {
-    id?: string;
-    phoneNumber: string;
-    countryCode: string;
-    otp: string;
-    purpose: string;
-    isUsed?: boolean;
-    expiresAt: Date;
-    ipAddress?: string;
-    userAgent?: string;
-    createdAt?: Date;
-  }): Promise<any> {
-    const otp = {
-      id: otpData.id || randomUUID(),
-      phoneNumber: otpData.phoneNumber,
-      countryCode: otpData.countryCode,
-      otp: otpData.otp,
-      purpose: otpData.purpose,
-      isUsed: otpData.isUsed || false,
-      expiresAt: otpData.expiresAt,
-      ipAddress: otpData.ipAddress,
-      userAgent: otpData.userAgent,
-      createdAt: otpData.createdAt || new Date(),
-    };
-    this.otpVerifications.set(otp.id, otp);
-    return otp;
-  }
-
-  async verifyOtp(phoneNumber: string, countryCode: string, otp: string, purpose: string): Promise<any> {
-    const otpRecord = Array.from(this.otpVerifications.values()).find(record =>
-      record.phoneNumber === phoneNumber &&
-      record.countryCode === countryCode &&
-      record.otp === otp &&
-      record.purpose === purpose &&
-      !record.isUsed &&
-      new Date() < new Date(record.expiresAt)
-    );
-
-    if (otpRecord) {
-      // Mark OTP as used
-      otpRecord.isUsed = true;
-      this.otpVerifications.set(otpRecord.id, otpRecord);
-      return otpRecord;
-    }
-
-    return null;
-  }
-
-  // Security and auth methods
-  async createSecurityEvent(event: {
-    userId?: string;
-    eventType: string;
-    description: string;
-    ipAddress?: string;
-    userAgent?: string;
-    riskLevel?: string;
-    details?: any;
-  }): Promise<any> {
-    const securityEvent = {
-      id: randomUUID(),
-      userId: event.userId,
-      eventType: event.eventType,
-      description: event.description,
-      ipAddress: event.ipAddress,
-      userAgent: event.userAgent,
-      riskLevel: event.riskLevel,
-      details: event.details,
-      createdAt: new Date(),
-    };
-    this.securityEvents.set(securityEvent.id, securityEvent);
-    return securityEvent;
-  }
-
-  async createAuthSession(session: {
-    userId: string;
-    token: string;
-    refreshToken?: string;
-    deviceId?: string;
-    deviceInfo?: any;
-    ipAddress?: string;
-    userAgent?: string;
-    expiresAt: Date;
-  }): Promise<any> {
-    const authSession = {
-      id: randomUUID(),
-      userId: session.userId,
-      token: session.token,
-      refreshToken: session.refreshToken,
-      deviceId: session.deviceId,
-      deviceInfo: session.deviceInfo,
-      ipAddress: session.ipAddress,
-      userAgent: session.userAgent,
-      expiresAt: session.expiresAt,
-      createdAt: new Date(),
-    };
-    this.authSessions.set(authSession.id, authSession);
-    return authSession;
-  }
-
-  async getAuthSession(token: string): Promise<any | undefined> {
-    return Array.from(this.authSessions.values()).find(session => session.token === token);
-  }
-
-  async invalidateAuthSession(token: string): Promise<void> {
-    const session = Array.from(this.authSessions.values()).find(s => s.token === token);
-    if (session) {
-      this.authSessions.delete(session.id);
-    }
-  }
-
-  async createLegalAgreement(agreement: {
-    userId: string;
-    agreementType: string;
-    version: string;
-    ipAddress?: string;
-    userAgent?: string;
-    consentMethod: string;
-  }): Promise<any> {
-    const legalAgreement = {
-      id: randomUUID(),
-      userId: agreement.userId,
-      agreementType: agreement.agreementType,
-      version: agreement.version,
-      ipAddress: agreement.ipAddress,
-      userAgent: agreement.userAgent,
-      consentMethod: agreement.consentMethod,
-      createdAt: new Date(),
-    };
-    this.legalAgreements.set(legalAgreement.id, legalAgreement);
-    return legalAgreement;
-  }
-
-  // Additional user management
-  async getUserByPhone(phoneNumber: string, countryCode?: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(user =>
-      user.phoneNumber === phoneNumber &&
-      (countryCode ? user.countryCode === countryCode : true)
-    );
-  }
-
-  async getUserByUserId(userId: string): Promise<User | undefined> {
-    return this.users.get(userId);
-  }
-
-  async updateStripeCustomerId(id: string, stripeCustomerId: string): Promise<User | undefined> {
-    const user = this.users.get(id);
-    if (user) {
-      const updatedUser = { ...user, updatedAt: new Date() };
-      this.users.set(id, updatedUser);
-      return updatedUser;
-    }
-    return undefined;
-  }
-
-  async updateUserStripeInfo(id: string, info: { customerId: string; subscriptionId: string }): Promise<User | undefined> {
-    const user = this.users.get(id);
-    if (user) {
-      const updatedUser = { ...user, updatedAt: new Date() };
-      this.users.set(id, updatedUser);
-      return updatedUser;
-    }
-    return undefined;
-  }
-
-  // Existing method overrides for additional functionality
-  async getOtpVerification(phoneNumber: string, countryCode: string, purpose: string): Promise<any | undefined> {
-    return Array.from(this.otpVerifications.values()).find(record =>
-      record.phoneNumber === phoneNumber &&
-      record.countryCode === countryCode &&
-      record.purpose === purpose &&
-      !record.isUsed &&
-      new Date() < new Date(record.expiresAt)
-    );
-  }
 }
 
 export const storage = new MemStorage();

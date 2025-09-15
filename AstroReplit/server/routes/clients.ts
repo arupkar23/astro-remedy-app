@@ -143,7 +143,7 @@ router.get("/stats/summary", authenticateToken, requireAdmin, async (req, res) =
 
     // Total revenue from consultations and orders
     const consultationRevenue = await db.select({ 
-      total: sql<number>`COALESCE(SUM(${consultations.amount}), 0)` 
+      total: sql<number>`COALESCE(SUM(${consultations.price}), 0)` 
     }).from(consultations);
     
     const orderRevenue = await db.select({ 
@@ -220,7 +220,7 @@ router.get("/:id", authenticateToken, requireAdmin, async (req, res) => {
       createdAt: orders.createdAt,
     })
     .from(orders)
-    .where(eq(orders.userId, id))
+    .where(eq(orders.customerId, id))
     .orderBy(desc(orders.createdAt));
 
     // Calculate totals

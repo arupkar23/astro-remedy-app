@@ -257,12 +257,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
           timeOfBirth: timeOfBirth || null,
           placeOfBirth: placeOfBirth || null,
           preferredLanguage: preferredLanguage || "en",
-          termsAcceptedAt: new Date(),
-          privacyAcceptedAt: new Date(),
-          disclaimerAcceptedAt: new Date(),
-          returnPolicyAcceptedAt: new Date(),
-          dataProcessingConsent: agreements.dataProcessing || false,
-          marketingConsent: agreements.marketing || false,
         });
 
         // Create legal agreement records
@@ -755,7 +749,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       await storage.createSecurityEvent({
-        userId: user?.id,
+        userId: user?.id || undefined,
         eventType: "ACCOUNT_RECOVERY_REQUESTED",
         description: "Account recovery request submitted",
         ipAddress: req.ip,
@@ -2075,7 +2069,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Verify user owns this order
-      if (order.userId !== req.user.userId) {
+      if (order.customerId !== req.user.userId) {
         return res.status(403).json({ message: "Access denied" });
       }
       
