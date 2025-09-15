@@ -1,0 +1,21 @@
+Integrated Timer: A visible, accurate timer for all video, chat, and phone calls. Default consultation time duration of 30 minutes will be automatically set for chat, video call, and phone call, but this default can be edited manually by me from the admin dashboard for each booking or as a global setting. The timer will allow me to manage consultation duration, and automatically calculate session charges. Give an alert for both side (student/client and astrologer ) 5 minutes before the consultation ends. Try to display timer count on both end ( for video call, phone call, chat during live consultation ). Try to keep an option- client can add anyone ( single or multi persons upto 4 ) during live consultation ( video call, phone call, and chat ). Live chat consultation should have features of sending text , image ,video, voice of good quality from both side ). 
+Pre-consultation Setup: Ability for me to quickly pull up the client's profile, manually uploaded charts ( image/pdf file ) by clients  and hand typed notes before starting a call.
+Automatic in-app good thank you message notification to client after end of online consultation.
+Offline Consultation ( Chamber – Kolkata ): Option of online booking for taking appointment for offline consultation.
+Fees for online and offline consultation ( for both mode fees are same): option of Booking an appointment for offline consultation is only for Kolkata. In India, “ Over all prediction” of horoscope Fees-500/-( fees are same for offline consultation; & online consultation via video call, phone call and chat).This amount should be changed manually from admin dashboard
+#when any client will book a session , he or she can choose any one of 3 consultation option-video call, voice call or chat.
+# keep a only in-app chat option for consultation .because many clients prefer only chat . consultation via video call and voice call should have option of adding chat feature.
+Online consultation plans are given below: Astrologer’s available days and timings ( Monday to Sunday Around 10am-11.15am,12pm-1:30pm, 3pm-5pm,7pm-9pm.Only for Wednesday ,do not allow anyone to book an appointment between 3pm-5pm. 
+# Remember that video call, voice call and chat system should be fully protected. So apply all best possible feature to safe both sides specially for protecting astrologer from all legal issues.
+I have used word “Around” to give you liberty (  to increase or decrease starting and ending time by 15min for each time duration I have given )to make a best Booking plan (using booking calendar or any other that you think best for my business) according to my plans given below: 
+Quick Guidance: 299/- i.e 299 INR( Duration- 15min )
+Focused Analysis: 499/- i.e 499 INR ( Duration- 30min )
+In-Depth Analysis: 749/- i.e 749 INR ( Duration- 45min )
+Comprehensive Analysis: 999/- i.e 999 INR ( Duration- 1hour )
+
+Offline Consultation plans ( Chamber visit, booking through Online ) are given below:Astrologer’s available day and timing for offline consultation: only Wednesday ( 3pm to 6pm ) at Kolkata chamber.
+Focused Analysis: 499/- i.e 499 INR( Duration- 30min )
+In-Depth Analysis: 749/-i.e 749 INR ( Duration- 45min )
+Comprehensive Analysis: 999/- i.e 999 INR ( Duration- 1 hour )
+Consultation plans on specific topics basics:- clients will be able to book appointments for only online consultaion on the basis of specific topics like Job, Business, Income, Partnership, Education, Marriage, marital dischord, Break up, Dreams, success, Divorce, Love affairs, Litigation, Offspring, Brother-sister, House/land, Vehicle, father/Mother, Relatives, Bank balance, Friend, enemy, diseases, Fortune, Accident, small tour, Foreign travel, Share Market, Sudden gain, lottery, Religious acts, Debt, Happiness, misery, Master, Disciple, Servant, Talent, Devotion, Name & Fame, Accident, Death
+Consultation fees for each topic( consultation duration for each topic- 6 minutes) mentioned above is 100/- i.e 100 INR. Client will be able to select single or multi topics for only online consultation.Example- If client book for 3 topics ,then 18 min will be booked by client & 300 INR to be paid by client during booking.
