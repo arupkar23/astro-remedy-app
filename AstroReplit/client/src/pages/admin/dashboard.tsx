@@ -326,7 +326,7 @@ export default function AdminDashboard() {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground mb-1">{stat.title}</p>
-                <p className="text-2xl font-bold text-foreground group-hover:text-primary transition-colors" data-testid={`stat-value-${index}`}>
+                <p className="text-2xl font-bold text-white drop-shadow-lg group-hover:text-primary transition-colors" data-testid={`stat-value-${index}`}>
                   {stat.value}
                 </p>
               </div>
