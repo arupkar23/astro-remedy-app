@@ -286,18 +286,26 @@ export default function AdminDashboard() {
         <div style={{backgroundColor: '#ffff00', color: '#000000', padding: '30px', fontSize: '20px', textAlign: 'center', marginBottom: '30px'}}>
           <h2>⚡ ADMIN SECTIONS ⚡</h2>
           <div style={{marginTop: '20px'}}>
-            <a href="/admin/clients" style={{color: '#000000', fontSize: '18px', display: 'block', margin: '10px 0', padding: '15px', backgroundColor: '#ffffff', textDecoration: 'none', border: '2px solid #000000'}}>
-              CLIENT MANAGEMENT
-            </a>
-            <a href="/admin/consultations" style={{color: '#000000', fontSize: '18px', display: 'block', margin: '10px 0', padding: '15px', backgroundColor: '#ffffff', textDecoration: 'none', border: '2px solid #000000'}}>
-              CONSULTATIONS
-            </a>
-            <a href="/admin/courses" style={{color: '#000000', fontSize: '18px', display: 'block', margin: '10px 0', padding: '15px', backgroundColor: '#ffffff', textDecoration: 'none', border: '2px solid #000000'}}>
-              COURSE MANAGEMENT
-            </a>
-            <a href="/admin/products" style={{color: '#000000', fontSize: '18px', display: 'block', margin: '10px 0', padding: '15px', backgroundColor: '#ffffff', textDecoration: 'none', border: '2px solid #000000'}}>
-              PRODUCTS & ORDERS
-            </a>
+            <Link href="/admin/clients">
+              <div style={{color: '#000000', fontSize: '18px', display: 'block', margin: '10px 0', padding: '15px', backgroundColor: '#ffffff', textDecoration: 'none', border: '2px solid #000000', cursor: 'pointer'}}>
+                CLIENT MANAGEMENT
+              </div>
+            </Link>
+            <Link href="/admin/consultations">
+              <div style={{color: '#000000', fontSize: '18px', display: 'block', margin: '10px 0', padding: '15px', backgroundColor: '#ffffff', textDecoration: 'none', border: '2px solid #000000', cursor: 'pointer'}}>
+                CONSULTATIONS
+              </div>
+            </Link>
+            <Link href="/admin/courses">
+              <div style={{color: '#000000', fontSize: '18px', display: 'block', margin: '10px 0', padding: '15px', backgroundColor: '#ffffff', textDecoration: 'none', border: '2px solid #000000', cursor: 'pointer'}}>
+                COURSE MANAGEMENT
+              </div>
+            </Link>
+            <Link href="/admin/products">
+              <div style={{color: '#000000', fontSize: '18px', display: 'block', margin: '10px 0', padding: '15px', backgroundColor: '#ffffff', textDecoration: 'none', border: '2px solid #000000', cursor: 'pointer'}}>
+                PRODUCTS & ORDERS
+              </div>
+            </Link>
           </div>
         </div>
 
@@ -332,7 +340,7 @@ export default function AdminDashboard() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {quickActions.map((action, index) => (
-              <a key={index} href={action.route}>
+              <Link key={index} href={action.route}>
                 <GlassCard 
                   className="p-6 cursor-pointer hover:scale-105 transition-all duration-300 group"
                   data-testid={`quick-action-${index}`}
@@ -347,7 +355,7 @@ export default function AdminDashboard() {
                       {action.description}
                     </p>
                   </GlassCard>
-              </a>
+              </Link>
             ))}
           </div>
         </div>
