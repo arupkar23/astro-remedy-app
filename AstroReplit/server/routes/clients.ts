@@ -15,7 +15,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 // Import centralized authentication middleware (safer than redefining)
 // These should be imported from main routes to prevent security drift
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
 const authenticateToken = (req: any, res: any, next: any) => {
   const authHeader = req.headers['authorization'];

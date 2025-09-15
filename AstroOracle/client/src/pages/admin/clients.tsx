@@ -217,13 +217,13 @@ export default function AdminClients() {
         {/* Client Statistics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
           <GlassCard className="p-6 text-center">
-            <div className="text-2xl font-bold text-primary mb-2">
+            <div className="text-2xl font-bold text-black bg-white/90 px-2 py-1 rounded-md inline-block mb-2">
               {filteredUsers.filter((u: any) => u.isVerified).length}
             </div>
             <div className="text-sm text-muted-foreground">Verified Clients</div>
           </GlassCard>
           <GlassCard className="p-6 text-center">
-            <div className="text-2xl font-bold text-secondary mb-2">
+            <div className="text-2xl font-bold text-black bg-white/90 px-2 py-1 rounded-md inline-block mb-2">
               {filteredUsers.filter((u: any) => u.dateOfBirth).length}
             </div>
             <div className="text-sm text-muted-foreground">Complete Profiles</div>
