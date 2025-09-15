@@ -183,14 +183,17 @@ export default function Login() {
         <GlassCard className="p-8">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="w-16 h-16 rounded-lg bg-primary flex items-center justify-center neon-border mx-auto mb-4">
-              <span className="text-primary-foreground font-bold text-2xl">JG</span>
+            <div className="w-16 h-16 rounded-lg bg-red-500 flex items-center justify-center neon-border mx-auto mb-4">
+              <span className="text-white font-bold text-2xl">NEW</span>
             </div>
-            <h1 className="text-3xl font-bold neon-text text-primary mb-2" data-testid="login-title">
-              🚀 AUTHENTICATION SYSTEM WORKING 🚀
+            <h1 className="text-5xl font-bold text-red-500 mb-2" data-testid="login-title">
+              ⚡ UPDATED LOGIN PAGE ⚡
             </h1>
-            <p className="text-muted-foreground">
-              Choose your preferred login method to access your cosmic journey
+            <h2 className="text-2xl font-bold text-green-500 mb-4">
+              THREE LOGIN METHODS AVAILABLE
+            </h2>
+            <p className="text-blue-500 font-bold text-lg">
+              If you see this message, the authentication system is working!
             </p>
           </div>
 
