@@ -22,6 +22,7 @@ import { randomUUID } from "crypto";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from 'uuid';
+import { twilioService } from './twilio-service';
 
 // Custom validation schemas for multi-step registration
 const registrationStep1Schema = z.object({
@@ -142,8 +143,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         details: { phoneNumber, countryCode, purpose },
       });
 
-      // In production, send SMS via Twilio/other provider
-      console.log(`OTP for ${countryCode}${phoneNumber}: ${otp} (Purpose: ${purpose})`);
+      // Send OTP via Twilio SMS
+      const smsResult = await twilioService.sendOTP(phoneNumber, countryCode, otp, purpose);
+      
+      if (!smsResult.success) {
+        console.error(`Failed to send OTP SMS: ${smsResult.error}`);
+        // Continue with success response even if SMS fails (OTP is stored in DB)
+      } else {
+        console.log(`✅ OTP SMS sent successfully via Twilio to ${countryCode}${phoneNumber} (SID: ${smsResult.messageId})`);
+      }
       
       res.json({ 
         message: "OTP sent successfully",
@@ -612,8 +620,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         details: { phoneNumber, countryCode },
       });
 
-      // In production, send SMS via Twilio
-      console.log(`Password reset OTP for ${countryCode}${phoneNumber}: ${otp}`);
+      // Send OTP via Twilio SMS
+      const smsResult = await twilioService.sendOTP(phoneNumber, countryCode, otp, "password_reset");
+      
+      if (!smsResult.success) {
+        console.error(`Failed to send password reset OTP SMS: ${smsResult.error}`);
+        // Continue with success response even if SMS fails (OTP is stored in DB)
+      } else {
+        console.log(`✅ Password reset OTP SMS sent successfully via Twilio to ${countryCode}${phoneNumber} (SID: ${smsResult.messageId})`);
+      }
 
       res.json({ message: "If an account exists with this phone number, you will receive an OTP to reset your password." });
     } catch (error: any) {

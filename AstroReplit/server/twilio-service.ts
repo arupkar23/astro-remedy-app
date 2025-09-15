@@ -63,6 +63,9 @@ export class TwilioService {
       case 'recovery':
         message = `Your account recovery OTP is: ${otp}. Valid for 10 minutes. Do not share this code.`;
         break;
+      case 'password_reset':
+        message = `Your Jai Guru Astro Remedy password reset OTP is: ${otp}. Valid for 10 minutes. Do not share this code.`;
+        break;
       default:
         message = `Your Jai Guru Astro Remedy verification code is: ${otp}. Valid for 10 minutes.`;
     }

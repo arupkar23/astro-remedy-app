@@ -28,7 +28,7 @@ outputType = "webview"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd AstroReplit && JWT_SECRET=\"your-secret-key-replace-in-production\" NODE_ENV=production npm start"
+args = "cd AstroReplit && NODE_ENV=production node --env-file=.env dist/index.js"
 waitForPort = 5000
 
 [[ports]]
