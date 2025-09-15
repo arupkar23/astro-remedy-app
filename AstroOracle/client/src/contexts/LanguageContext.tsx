@@ -110,6 +110,12 @@ const translations = {
     countriesServed: "Countries Served",
     
     
+    // Additional service tags
+    authenticBlessed: "Authentic & Blessed",
+    sacredGeometry: "Sacred Geometry", 
+    mindBodyHarmony: "Mind Body Harmony",
+    sacredHomeVisits: "Sacred Home Visits",
+    
     // Common
     welcome: "Welcome",
     loading: "Loading...",
@@ -138,8 +144,16 @@ const translations = {
     satisfiedClients: "संतुष्ट ग्राहक",
     countriesServed: "देश सेवित",
     
+    // Additional service tags - Hindi
+    authenticBlessed: "प्रामाणिक और आशीर्वादित",
+    sacredGeometry: "पवित्र ज्यामिति", 
+    mindBodyHarmony: "मन शरीर सामंजस्य",
+    sacredHomeVisits: "पवित्र घर यात्राएं",
+    
     // About Section - Hindi
     meetAstrologer: "ज्योतिषी अरुप शास्त्री से मिलें",
+    astrologerDescription: "वैदिक ज्योतिष में 18 से अधिक वर्षों के समर्पित अभ्यास के साथ, ज्योतिषी अरुप शास्त्री ने हजारों आत्माओं को स्पष्टता, उद्देश्य और ब्रह्मांडीय संरेखण की दिशा में मार्गदर्शन किया है।",
+    scheduleConsultation: "व्यक्तिगत परामर्श निर्धारित करें",
     
     // Common - Hindi
     welcome: "स्वागत",
@@ -252,6 +266,11 @@ const translations = {
     vedicAstrologyCoursesDesc: "ব্যাপক অনলাইন এবং অফলাইন শিক্ষা প্রোগ্রামের মাধ্যমে প্রাচীন জ্ঞানে দক্ষতা অর্জন করুন",
     startingFrom: "থেকে শুরু",
     beginnerToExpert: "শিক্ষানবিস থেকে বিশেষজ্ঞ",
+    
+    // Additional service tags - Bengali
+    authenticBlessed: "প্রামাণিক ও আশীর্বাদপ্রাপ্ত",
+    sacredGeometry: "পবিত্র জ্যামিতি", 
+    mindBodyHarmony: "মন দেহ সামঞ্জস্য",
     
     // Common UI elements
     select: "নির্বাচন করুন",
