@@ -12,52 +12,8 @@ import { Eye, EyeOff, User, Mail, Phone, Lock, Calendar, MapPin, Shield, Smartph
 import { useToast } from "@/hooks/use-toast";
 // AutoTranslate import removed for fast loading
 import { apiRequest } from "@/lib/queryClient";
-// Temporary local phone codes (most common countries)  
-const globalPhoneCodes = [
-  { value: "+91", label: "🇮🇳 +91", country: "India", flag: "🇮🇳" },
-  { value: "+1", label: "🇺🇸 +1", country: "United States", flag: "🇺🇸" },
-  { value: "+86", label: "🇨🇳 +86", country: "China", flag: "🇨🇳" },
-  { value: "+81", label: "🇯🇵 +81", country: "Japan", flag: "🇯🇵" },
-  { value: "+49", label: "🇩🇪 +49", country: "Germany", flag: "🇩🇪" },
-  { value: "+33", label: "🇫🇷 +33", country: "France", flag: "🇫🇷" },
-  { value: "+44", label: "🇬🇧 +44", country: "United Kingdom", flag: "🇬🇧" },
-  { value: "+82", label: "🇰🇷 +82", country: "South Korea", flag: "🇰🇷" },
-  { value: "+61", label: "🇦🇺 +61", country: "Australia", flag: "🇦🇺" },
-  { value: "+7", label: "🇷🇺 +7", country: "Russia", flag: "🇷🇺" },
-  { value: "+971", label: "🇦🇪 +971", country: "UAE", flag: "🇦🇪" },
-  { value: "+65", label: "🇸🇬 +65", country: "Singapore", flag: "🇸🇬" },
-  { value: "+52", label: "🇲🇽 +52", country: "Mexico", flag: "🇲🇽" },
-  { value: "+55", label: "🇧🇷 +55", country: "Brazil", flag: "🇧🇷" },
-  { value: "+39", label: "🇮🇹 +39", country: "Italy", flag: "🇮🇹" },
-  { value: "+34", label: "🇪🇸 +34", country: "Spain", flag: "🇪🇸" },
-  { value: "+31", label: "🇳🇱 +31", country: "Netherlands", flag: "🇳🇱" },
-  { value: "+41", label: "🇨🇭 +41", country: "Switzerland", flag: "🇨🇭" },
-  { value: "+46", label: "🇸🇪 +46", country: "Sweden", flag: "🇸🇪" },
-  { value: "+47", label: "🇳🇴 +47", country: "Norway", flag: "🇳🇴" },
-  { value: "+45", label: "🇩🇰 +45", country: "Denmark", flag: "🇩🇰" },
-  { value: "+358", label: "🇫🇮 +358", country: "Finland", flag: "🇫🇮" },
-  { value: "+43", label: "🇦🇹 +43", country: "Austria", flag: "🇦🇹" },
-  { value: "+32", label: "🇧🇪 +32", country: "Belgium", flag: "🇧🇪" },
-  { value: "+351", label: "🇵🇹 +351", country: "Portugal", flag: "🇵🇹" },
-  { value: "+30", label: "🇬🇷 +30", country: "Greece", flag: "🇬🇷" },
-  { value: "+48", label: "🇵🇱 +48", country: "Poland", flag: "🇵🇱" },
-  { value: "+420", label: "🇨🇿 +420", country: "Czech Republic", flag: "🇨🇿" },
-  { value: "+36", label: "🇭🇺 +36", country: "Hungary", flag: "🇭🇺" },
-  { value: "+40", label: "🇷🇴 +40", country: "Romania", flag: "🇷🇴" },
-  { value: "+359", label: "🇧🇬 +359", country: "Bulgaria", flag: "🇧🇬" },
-  { value: "+385", label: "🇭🇷 +385", country: "Croatia", flag: "🇭🇷" },
-  { value: "+381", label: "🇷🇸 +381", country: "Serbia", flag: "🇷🇸" },
-  { value: "+386", label: "🇸🇮 +386", country: "Slovenia", flag: "🇸🇮" },
-  { value: "+421", label: "🇸🇰 +421", country: "Slovakia", flag: "🇸🇰" },
-  { value: "+370", label: "🇱🇹 +370", country: "Lithuania", flag: "🇱🇹" },
-  { value: "+371", label: "🇱🇻 +371", country: "Latvia", flag: "🇱🇻" },
-  { value: "+372", label: "🇪🇪 +372", country: "Estonia", flag: "🇪🇪" },
-  { value: "+353", label: "🇮🇪 +353", country: "Ireland", flag: "🇮🇪" },
-  { value: "+354", label: "🇮🇸 +354", country: "Iceland", flag: "🇮🇸" },
-  { value: "+852", label: "🇭🇰 +852", country: "Hong Kong", flag: "🇭🇰" },
-  { value: "+853", label: "🇲🇴 +853", country: "Macao", flag: "🇲🇴" },
-  { value: "+886", label: "🇹🇼 +886", country: "Taiwan", flag: "🇹🇼" },
-];
+// Import comprehensive global phone codes for all countries worldwide (196+ countries)
+import { globalPhoneCodes } from '../../../data/global-phone-codes';
 
 export default function Register() {
   const [, setLocation] = useLocation();

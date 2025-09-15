@@ -12,29 +12,8 @@ import { Eye, EyeOff, User, Lock, Mail, Phone, Smartphone, Shield, AlertCircle }
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 // AutoTranslate import removed for fast loading
-// Temporary local phone codes (most common countries)
-const globalPhoneCodes = [
-  { value: "+91", label: "🇮🇳 +91", country: "India", flag: "🇮🇳" },
-  { value: "+1", label: "🇺🇸 +1", country: "United States", flag: "🇺🇸" },
-  { value: "+86", label: "🇨🇳 +86", country: "China", flag: "🇨🇳" },
-  { value: "+81", label: "🇯🇵 +81", country: "Japan", flag: "🇯🇵" },
-  { value: "+49", label: "🇩🇪 +49", country: "Germany", flag: "🇩🇪" },
-  { value: "+33", label: "🇫🇷 +33", country: "France", flag: "🇫🇷" },
-  { value: "+44", label: "🇬🇧 +44", country: "United Kingdom", flag: "🇬🇧" },
-  { value: "+82", label: "🇰🇷 +82", country: "South Korea", flag: "🇰🇷" },
-  { value: "+61", label: "🇦🇺 +61", country: "Australia", flag: "🇦🇺" },
-  { value: "+7", label: "🇷🇺 +7", country: "Russia", flag: "🇷🇺" },
-  { value: "+971", label: "🇦🇪 +971", country: "UAE", flag: "🇦🇪" },
-  { value: "+65", label: "🇸🇬 +65", country: "Singapore", flag: "🇸🇬" },
-  { value: "+52", label: "🇲🇽 +52", country: "Mexico", flag: "🇲🇽" },
-  { value: "+55", label: "🇧🇷 +55", country: "Brazil", flag: "🇧🇷" },
-  { value: "+39", label: "🇮🇹 +39", country: "Italy", flag: "🇮🇹" },
-  { value: "+34", label: "🇪🇸 +34", country: "Spain", flag: "🇪🇸" },
-  { value: "+31", label: "🇳🇱 +31", country: "Netherlands", flag: "🇳🇱" },
-  { value: "+41", label: "🇨🇭 +41", country: "Switzerland", flag: "🇨🇭" },
-  { value: "+46", label: "🇸🇪 +46", country: "Sweden", flag: "🇸🇪" },
-  { value: "+47", label: "🇳🇴 +47", country: "Norway", flag: "🇳🇴" },
-];
+// Import comprehensive global phone codes for all countries worldwide
+import { globalPhoneCodes } from '../../../data/global-phone-codes';
 
 export default function Login() {
   const [, setLocation] = useLocation();
@@ -288,8 +267,8 @@ export default function Login() {
                       <SelectTrigger className="form-input text-xs">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="glass-card max-h-40">
-                        {globalPhoneCodes.slice(0, 20).map((code) => (
+                      <SelectContent className="glass-card max-h-60 overflow-y-auto">
+                        {globalPhoneCodes.map((code) => (
                           <SelectItem key={code.value} value={code.value} className="text-xs">
                             {code.label}
                           </SelectItem>
@@ -434,8 +413,8 @@ export default function Login() {
                       <SelectTrigger className="form-input text-xs">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="glass-card max-h-40">
-                        {globalPhoneCodes.slice(0, 20).map((code) => (
+                      <SelectContent className="glass-card max-h-60 overflow-y-auto">
+                        {globalPhoneCodes.map((code) => (
                           <SelectItem key={code.value} value={code.value} className="text-xs">
                             {code.label}
                           </SelectItem>
