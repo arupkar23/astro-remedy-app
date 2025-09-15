@@ -149,7 +149,7 @@ export default function Login() {
         if (!formData.userId || !formData.password) {
           toast({
             title: "Validation Error",
-            description: "Please enter your UUID and password",
+            description: "Please enter your User ID and password",
             variant: "destructive",
           });
           return false;
@@ -183,17 +183,14 @@ export default function Login() {
         <GlassCard className="p-8">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="w-16 h-16 rounded-lg bg-red-500 flex items-center justify-center neon-border mx-auto mb-4">
-              <span className="text-white font-bold text-2xl">NEW</span>
+            <div className="w-16 h-16 rounded-lg bg-primary flex items-center justify-center neon-border mx-auto mb-4">
+              <span className="text-primary-foreground font-bold text-2xl">JG</span>
             </div>
-            <h1 className="text-5xl font-bold text-red-500 mb-2" data-testid="login-title">
-              ⚡ UPDATED LOGIN PAGE ⚡
+            <h1 className="text-3xl font-bold neon-text text-primary mb-2" data-testid="login-title">
+              Sign In to Your Account
             </h1>
-            <h2 className="text-2xl font-bold text-green-500 mb-4">
-              THREE LOGIN METHODS AVAILABLE
-            </h2>
-            <p className="text-blue-500 font-bold text-lg">
-              If you see this message, the authentication system is working!
+            <p className="text-muted-foreground">
+              Choose your preferred login method to access your cosmic journey
             </p>
           </div>
 
@@ -210,7 +207,7 @@ export default function Login() {
                   setFormData({ ...formData, otp: "" });
                 }}
                 className={`w-full text-left justify-start space-x-2 ${
-                  loginMethod === "mobile_otp" ? "neon-border bg-primary" : "glass"
+                  loginMethod === "mobile_otp" ? "bg-primary shadow-md" : "glass"
                 }`}
                 data-testid="mobile-otp-method"
               >
@@ -226,13 +223,13 @@ export default function Login() {
                 variant={loginMethod === "userid_password" ? "default" : "outline"}
                 onClick={() => setLoginMethod("userid_password")}
                 className={`w-full text-left justify-start space-x-2 ${
-                  loginMethod === "userid_password" ? "neon-border bg-primary" : "glass"
+                  loginMethod === "userid_password" ? "bg-primary shadow-md" : "glass"
                 }`}
                 data-testid="uuid-password-method"
               >
                 <User className="w-4 h-4" />
                 <div>
-                  <div className="font-medium">UUID + Password</div>
+                  <div className="font-medium">User ID + Password</div>
                   <div className="text-xs opacity-70">Primary identifier authentication</div>
                 </div>
               </Button>
@@ -242,7 +239,7 @@ export default function Login() {
                 variant={loginMethod === "mobile_password" ? "default" : "outline"}
                 onClick={() => setLoginMethod("mobile_password")}
                 className={`w-full text-left justify-start space-x-2 ${
-                  loginMethod === "mobile_password" ? "neon-border bg-primary" : "glass"
+                  loginMethod === "mobile_password" ? "bg-primary shadow-md" : "glass"
                 }`}
                 data-testid="mobile-password-method"
               >
@@ -351,7 +348,7 @@ export default function Login() {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="userId" className="text-foreground">
-                    UUID (Primary Identifier) *
+                    User ID *
                   </Label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -360,14 +357,14 @@ export default function Login() {
                       type="text"
                       value={formData.userId}
                       onChange={(e) => setFormData({ ...formData, userId: e.target.value })}
-                      placeholder="Enter your UUID (e.g., 123e4567-e89b-12d3-a456-426614174000)"
+                      placeholder="Enter your User ID"
                       className="form-input pl-10"
                       required
                       data-testid="uuid-input"
                     />
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    Your unique UUID identifier provided during registration
+                    Your unique User ID provided during registration
                   </p>
                 </div>
 
@@ -569,7 +566,7 @@ export default function Login() {
               className={`glass ${loginMethod === "userid_password" ? "ring-1 ring-primary" : ""}`}
               data-testid="switch-userid"
             >
-              🆔 User ID
+              👤 User ID
             </Button>
             <Button
               type="button"
@@ -629,18 +626,6 @@ export default function Login() {
           </div>
         </GlassCard>
 
-        {/* Security Notice */}
-        <div className="mt-6 text-center space-y-2">
-          <p className="text-xs text-muted-foreground">
-            🔒 Enterprise-grade security with multiple authentication options
-          </p>
-          <p className="text-xs text-muted-foreground">
-            🔐 All login attempts are monitored and logged for your security
-          </p>
-          <p className="text-xs text-yellow-400">
-            📱 Mobile + OTP is the most secure login method
-          </p>
-        </div>
       </div>
     </div>
   );
