@@ -473,7 +473,7 @@ export const studentMessages = pgTable("student_messages", {
   isRead: boolean("is_read").default(false),
   readAt: timestamp("read_at"),
   priority: text("priority").default("normal"), // "low", "normal", "high", "urgent"
-  replyToMessageId: uuid("reply_to_message_id").references(() => studentMessages.id),
+  replyToMessageId: uuid("reply_to_message_id"),
   isStarred: boolean("is_starred").default(false),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),

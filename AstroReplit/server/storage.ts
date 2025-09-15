@@ -454,7 +454,7 @@ export class MemStorage implements IStorage {
     const user: User = { 
       ...insertUser, 
       id,
-      countryCode: insertUser.countryCode,
+      countryCode: insertUser.countryCode || "IN",
       email: insertUser.email || null,
       whatsappNumber: insertUser.whatsappNumber || null,
       dateOfBirth: insertUser.dateOfBirth || null,
@@ -660,7 +660,7 @@ export class MemStorage implements IStorage {
       images: insertProduct.images || [],
       stock: insertProduct.stock || 0,
       specifications: insertProduct.specifications || null,
-      countryPricing: insertProduct.countryPricing || null,
+      countryPricing: null,
       isActive: true,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -718,7 +718,7 @@ export class MemStorage implements IStorage {
   async getChatMessages(consultationId: string): Promise<ChatMessage[]> {
     return Array.from(this.chatMessages.values())
       .filter(m => m.consultationId === consultationId)
-      .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+      .sort((a, b) => (a.timestamp?.getTime() || 0) - (b.timestamp?.getTime() || 0));
   }
 
   async createChatMessage(insertMessage: InsertChatMessage): Promise<ChatMessage> {
@@ -738,7 +738,7 @@ export class MemStorage implements IStorage {
   async getUserNotifications(userId: string): Promise<Notification[]> {
     return Array.from(this.notifications.values())
       .filter(n => n.userId === userId)
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+      .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
   }
 
   async createNotification(notification: { userId: string; title: string; message: string; type: string; actionUrl?: string }): Promise<Notification> {
@@ -783,13 +783,13 @@ export class MemStorage implements IStorage {
   async getAllFaqs(): Promise<Faq[]> {
     return Array.from(this.faqs.values())
       .filter(faq => faq.isActive)
-      .sort((a, b) => b.priority - a.priority);
+      .sort((a, b) => (b.priority || 0) - (a.priority || 0));
   }
 
   async getFaqsByCategory(category: string): Promise<Faq[]> {
     return Array.from(this.faqs.values())
       .filter(faq => faq.isActive && faq.category === category)
-      .sort((a, b) => b.priority - a.priority);
+      .sort((a, b) => (b.priority || 0) - (a.priority || 0));
   }
 
   async searchFaqs(query: string): Promise<Faq[]> {
@@ -800,7 +800,7 @@ export class MemStorage implements IStorage {
         const searchText = `${faq.question} ${faq.answer} ${faq.keywords?.join(' ') || ''}`.toLowerCase();
         return searchTerms.some(term => searchText.includes(term));
       })
-      .sort((a, b) => b.priority - a.priority);
+      .sort((a, b) => (b.priority || 0) - (a.priority || 0));
   }
 
   async createFaq(faq: InsertFaq): Promise<Faq> {
@@ -836,14 +836,14 @@ export class MemStorage implements IStorage {
   async incrementFaqView(id: string): Promise<void> {
     const faq = this.faqs.get(id);
     if (faq) {
-      this.faqs.set(id, { ...faq, viewCount: faq.viewCount + 1 });
+      this.faqs.set(id, { ...faq, viewCount: (faq.viewCount || 0) + 1 });
     }
   }
 
   async rateFaqHelpful(id: string, isHelpful: boolean): Promise<void> {
     const faq = this.faqs.get(id);
     if (faq && isHelpful) {
-      this.faqs.set(id, { ...faq, helpfulCount: faq.helpfulCount + 1 });
+      this.faqs.set(id, { ...faq, helpfulCount: (faq.helpfulCount || 0) + 1 });
     }
   }
 
@@ -857,6 +857,9 @@ export class MemStorage implements IStorage {
     const newChat: SupportChat = {
       ...chat,
       id,
+      userId: chat.userId || null,
+      userEmail: chat.userEmail || null,
+      userName: chat.userName || null,
       status: "active",
       needsHumanSupport: false,
       humanSupportRequested: false,
@@ -880,7 +883,7 @@ export class MemStorage implements IStorage {
   async getSupportChatMessages(chatId: string): Promise<SupportChatMessage[]> {
     return Array.from(this.supportChatMessages.values())
       .filter(msg => msg.chatId === chatId)
-      .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+      .sort((a, b) => (a.createdAt?.getTime() || 0) - (b.createdAt?.getTime() || 0));
   }
 
   async createSupportChatMessage(message: InsertSupportChatMessage): Promise<SupportChatMessage> {
@@ -888,6 +891,7 @@ export class MemStorage implements IStorage {
     const newMessage: SupportChatMessage = {
       ...message,
       id,
+      messageType: message.messageType || null,
       isHelpful: null,
       relatedFaqId: null,
       createdAt: new Date(),
@@ -1115,6 +1119,7 @@ export class MemStorage implements IStorage {
       courseEndDate: insertCourse.courseEndDate || null,
       coverageArea: insertCourse.coverageArea || "Within 25km of Kolkata",
       specialInstructions: insertCourse.specialInstructions || null,
+      prerequisites: insertCourse.prerequisites || null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -1146,13 +1151,13 @@ export class MemStorage implements IStorage {
 
   async getAllHomeTuitionApplications(): Promise<HomeTuitionApplication[]> {
     return Array.from(this.homeTuitionApplications.values())
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+      .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
   }
 
   async getHomeTuitionApplicationsByStatus(status: string): Promise<HomeTuitionApplication[]> {
     return Array.from(this.homeTuitionApplications.values())
       .filter(app => app.status === status)
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+      .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
   }
 
   async createHomeTuitionApplication(insertApplication: InsertHomeTuitionApplication): Promise<HomeTuitionApplication> {
@@ -1168,6 +1173,8 @@ export class MemStorage implements IStorage {
       admissionDate: null,
       paymentStatus: "pending",
       paymentId: null,
+      preferredTimings: insertApplication.preferredTimings || null,
+      additionalNotes: insertApplication.additionalNotes || null,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -1192,13 +1199,13 @@ export class MemStorage implements IStorage {
   async getStudentConversationsByStudent(studentId: string): Promise<StudentConversation[]> {
     return Array.from(this.studentConversations.values())
       .filter(conv => conv.studentId === studentId)
-      .sort((a, b) => b.lastMessageAt.getTime() - a.lastMessageAt.getTime());
+      .sort((a, b) => (b.lastMessageAt?.getTime() || 0) - (a.lastMessageAt?.getTime() || 0));
   }
 
   async getStudentConversationsByAstrologer(astrologerId: string): Promise<StudentConversation[]> {
     return Array.from(this.studentConversations.values())
       .filter(conv => conv.astrologerId === astrologerId)
-      .sort((a, b) => b.lastMessageAt.getTime() - a.lastMessageAt.getTime());
+      .sort((a, b) => (b.lastMessageAt?.getTime() || 0) - (a.lastMessageAt?.getTime() || 0));
   }
 
   async createStudentConversation(insertConversation: InsertStudentConversation): Promise<StudentConversation> {
@@ -1232,7 +1239,7 @@ export class MemStorage implements IStorage {
   async getStudentMessages(conversationId: string): Promise<StudentMessage[]> {
     return Array.from(this.studentMessages.values())
       .filter(msg => msg.conversationId === conversationId)
-      .sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+      .sort((a, b) => (a.createdAt?.getTime() || 0) - (b.createdAt?.getTime() || 0));
   }
 
   async createStudentMessage(insertMessage: InsertStudentMessage): Promise<StudentMessage> {
@@ -1260,7 +1267,7 @@ export class MemStorage implements IStorage {
       await this.updateStudentConversation(conversation.id, {
         lastMessageAt: new Date(),
         lastMessageBy: insertMessage.senderId,
-        unreadCount: conversation.unreadCount + 1,
+        unreadCount: (conversation.unreadCount || 0) + 1,
       });
     }
 
@@ -1308,7 +1315,7 @@ export class MemStorage implements IStorage {
   async getStudentMessagesByConversation(conversationId: string, limit?: number, offset?: number): Promise<StudentMessage[]> {
     const messages = Array.from(this.studentMessages.values())
       .filter(msg => msg.conversationId === conversationId)
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+      .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
 
     if (limit) {
       const start = offset || 0;

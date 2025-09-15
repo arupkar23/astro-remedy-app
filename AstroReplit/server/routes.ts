@@ -741,7 +741,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "At least one identifier (username, email, or government ID) is required" });
       }
 
-      let user;
+      let user: any = null;
       if (username) {
         user = await storage.getUserByUsername(username);
       } else if (email) {
