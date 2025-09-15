@@ -731,7 +731,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "At least one identifier (username, email, or government ID) is required" });
       }
 
-      let user;
+      let user: any = null;
       if (username) {
         user = await storage.getUserByUsername(username);
       } else if (email) {
@@ -739,7 +739,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       await storage.createSecurityEvent({
-        userId: user?.id,
+        userId: user?.id || null,
         eventType: "ACCOUNT_RECOVERY_REQUESTED",
         description: "Account recovery request submitted",
         ipAddress: req.ip,
@@ -2059,7 +2059,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Verify user owns this order
-      if (order.userId !== req.user.userId) {
+      if (order.customerId !== req.user.userId) {
         return res.status(403).json({ message: "Access denied" });
       }
       
