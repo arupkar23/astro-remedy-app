@@ -76,27 +76,59 @@ export default function AdminClients() {
   const [timezones, setTimezones] = useState<string[]>([]);
   const queryClient = useQueryClient();
 
-  // Mock data to match the exact original UI design from your screenshot
+  // Mock data to match the exact original UI design from your screenshot  
   const mockClientsData = {
     clients: [
       {
         id: "1", 
         fullName: "Ravi Kumar", 
         email: "ravi@gmail.com", 
-        phoneNumber: "+91-9876543210", 
-        createdAt: "1/8/2024", 
+        phoneNumber: "+91-9876543210",
+        primaryPhone: "+91-9876543210",
+        currentPhone: "+91-9876543210",
+        countryCode: "+91",
+        whatsappNumber: "+91-9876543210",
+        createdAt: "2024-01-08T00:00:00Z",
+        lastUpdated: "2024-01-08T00:00:00Z",
         isVerified: false,
-        dateOfBirth: null,
+        dateOfBirth: "",
+        timeOfBirth: "",
+        placeOfBirth: {
+          city: "Delhi",
+          state: "Delhi", 
+          country: "India",
+          timezone: "Asia/Kolkata"
+        },
+        personalNotes: "",
+        consultationHistory: [],
+        orderHistory: [],
+        documents: [],
         status: "Unverified"
       },
       {
         id: "2", 
         fullName: "Priya Sharma", 
         email: "priya@gmail.com", 
-        phoneNumber: "+91-9876543211", 
-        createdAt: "1/29/2024", 
+        phoneNumber: "+91-9876543211",
+        primaryPhone: "+91-9876543211", 
+        currentPhone: "+91-9876543211",
+        countryCode: "+91",
+        whatsappNumber: "+91-9876543211",
+        createdAt: "2024-01-29T00:00:00Z",
+        lastUpdated: "2024-01-29T00:00:00Z",
         isVerified: false,
-        dateOfBirth: null,
+        dateOfBirth: "",
+        timeOfBirth: "",
+        placeOfBirth: {
+          city: "Mumbai",
+          state: "Maharashtra", 
+          country: "India",
+          timezone: "Asia/Kolkata"
+        },
+        personalNotes: "",
+        consultationHistory: [],
+        orderHistory: [],
+        documents: [],
         status: "Unverified"
       }
     ]
