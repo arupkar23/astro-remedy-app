@@ -16,6 +16,7 @@ import {
 } from "@shared/schema";
 import { ObjectStorageService } from "./objectStorage";
 import { registerConsultationSessionRoutes } from "./consultation-session";
+import clientRoutes from "./routes/clients";
 import { z } from "zod";
 import { randomUUID } from "crypto";
 import bcrypt from "bcrypt";
@@ -2276,6 +2277,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
     });
+  });
+
+  // Client Management routes
+  app.use("/api/clients", clientRoutes);
+
+  // Timezone detection API
+  app.post("/api/timezone/detect", async (req, res) => {
+    try {
+      const { city, state, country } = req.body;
+      
+      if (!city) {
+        return res.status(400).json({ error: "City is required" });
+      }
+
+      // Import GeolocationService dynamically to avoid circular dependencies
+      const { GeolocationService } = await import("./services/geolocation");
+      
+      const locationData = await GeolocationService.geocodeLocation(city, state, country);
+      
+      if (!locationData) {
+        return res.status(404).json({ 
+          error: "Location not found", 
+          suggested: {
+            timezone: "UTC",
+            city: city,
+            state: state || "",
+            country: country || ""
+          }
+        });
+      }
+
+      res.json({
+        success: true,
+        location: locationData,
+        currentTime: GeolocationService.getCurrentTimeInTimezone(locationData.timezone)
+      });
+    } catch (error) {
+      console.error("Error detecting timezone:", error);
+      res.status(500).json({ 
+        error: "Failed to detect timezone",
+        fallback: {
+          timezone: "UTC",
+          city: req.body.city,
+          state: req.body.state || "",
+          country: req.body.country || ""
+        }
+      });
+    }
+  });
+
+  // Get list of common timezones
+  app.get("/api/timezone/list", async (req, res) => {
+    try {
+      const { GeolocationService } = await import("./services/geolocation");
+      const timezones = GeolocationService.getCommonTimezones();
+      
+      res.json({
+        timezones: timezones.map(tz => ({
+          value: tz,
+          label: tz.replace(/_/g, ' '),
+          currentTime: GeolocationService.getCurrentTimeInTimezone(tz)
+        }))
+      });
+    } catch (error) {
+      console.error("Error fetching timezones:", error);
+      res.status(500).json({ error: "Failed to fetch timezones" });
+    }
   });
 
   // Register consultation session routes
