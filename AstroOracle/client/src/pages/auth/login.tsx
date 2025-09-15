@@ -149,7 +149,7 @@ export default function Login() {
         if (!formData.userId || !formData.password) {
           toast({
             title: "Validation Error",
-            description: "Please enter your User ID and password",
+            description: "Please enter your UUID and password",
             variant: "destructive",
           });
           return false;
@@ -225,7 +225,7 @@ export default function Login() {
                 className={`w-full text-left justify-start space-x-2 ${
                   loginMethod === "userid_password" ? "neon-border bg-primary" : "glass"
                 }`}
-                data-testid="userid-password-method"
+                data-testid="uuid-password-method"
               >
                 <User className="w-4 h-4" />
                 <div>

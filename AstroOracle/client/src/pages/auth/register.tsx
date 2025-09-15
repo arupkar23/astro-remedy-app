@@ -22,6 +22,8 @@ export default function Register() {
   const [step, setStep] = useState(1);
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
+  const [registrationComplete, setRegistrationComplete] = useState(false);
+  const [userUuid, setUserUuid] = useState("");
   const [formData, setFormData] = useState({
     // Basic Info
     username: "",
@@ -63,11 +65,12 @@ export default function Register() {
     },
     onSuccess: (data) => {
       localStorage.setItem("token", data.token);
+      setUserUuid(data.user.id || data.user.uuid); // Store the UUID for display
+      setRegistrationComplete(true); // Show success screen instead of redirect
       toast({
         title: "Registration Successful!",
         description: `Welcome to Jai Guru Astro Remedy, ${data.user.fullName}!`,
       });
-      setLocation("/");
     },
     onError: (error: any) => {
       toast({
@@ -268,6 +271,86 @@ export default function Register() {
 
     registerMutation.mutate(registerData);
   };
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast({
+        title: "Copied!",
+        description: "UUID copied to clipboard",
+      });
+    } catch (err) {
+      toast({
+        title: "Copy Failed",
+        description: "Unable to copy to clipboard",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Show success screen with UUID display
+  if (registrationComplete) {
+    return (
+      <div className="min-h-screen pt-16 pb-16 flex items-center justify-center" data-testid="registration-success">
+        <div className="max-w-md w-full mx-4">
+          <GlassCard className="p-8 text-center space-y-6">
+            {/* Success Icon */}
+            <div className="w-20 h-20 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center neon-border mx-auto">
+              <Shield className="w-10 h-10 text-green-400" />
+            </div>
+
+            <div className="space-y-4">
+              <h1 className="text-2xl font-bold neon-text text-primary">
+                Registration Complete!
+              </h1>
+              <p className="text-muted-foreground">
+                Your account has been successfully created. Save your UUID for future logins.
+              </p>
+            </div>
+
+            {/* UUID Display Section */}
+            <div className="bg-gray-800/40 backdrop-blur-sm p-4 rounded-lg border border-cyan-400/30 space-y-3">
+              <h3 className="font-semibold text-cyan-400 flex items-center gap-2">
+                <User className="w-4 h-4" />
+                Your Unique UUID
+              </h3>
+              <div className="bg-gray-900/60 p-3 rounded border break-all text-sm font-mono text-white">
+                {userUuid}
+              </div>
+              <Button
+                onClick={() => copyToClipboard(userUuid)}
+                className="w-full glass"
+                size="sm"
+              >
+                📋 Copy UUID to Clipboard
+              </Button>
+              <p className="text-xs text-yellow-400 flex items-start gap-2">
+                <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                <span>Save this UUID! You'll need it to login using the "UUID + Password" method.</span>
+              </p>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="space-y-3">
+              <NeonButton
+                onClick={() => setLocation("/")}
+                className="w-full"
+              >
+                Continue to Dashboard
+              </NeonButton>
+              <Button
+                variant="outline"
+                onClick={() => setLocation("/login")}
+                className="w-full glass"
+              >
+                Go to Login Page
+              </Button>
+            </div>
+          </GlassCard>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen pt-16 pb-16 flex items-center justify-center" data-testid="register-page">
