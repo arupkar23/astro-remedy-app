@@ -28,7 +28,6 @@ import AdminNotifications from "@/pages/admin/notifications";
 import Checkout from "@/pages/checkout";
 import PaymentSuccess from "@/pages/payment/success";
 import PaymentFailed from "@/pages/payment/failed";
-import MobileLogin from "@/pages/mobile-login";
 import ConsultationSession from "@/pages/consultation-session";
 import ConsultationFeedback from "@/pages/consultation-feedback";
 import Navigation from "@/components/layout/navigation";
@@ -64,7 +63,12 @@ function Router() {
       <Route path="/checkout" component={Checkout} />
       <Route path="/payment/success" component={PaymentSuccess} />
       <Route path="/payment/failed" component={PaymentFailed} />
-      <Route path="/mobile-login" component={MobileLogin} />
+      <Route path="/mobile-login">
+        {() => {
+          window.location.href = '/login';
+          return null;
+        }}
+      </Route>
       <Route path="/consultation-session" component={ConsultationSession} />
       <Route path="/consultation-feedback" component={ConsultationFeedback} />
       <Route component={NotFound} />
