@@ -35,8 +35,23 @@ export default function Footer() {
             {/* Brand Section */}
             <div className="md:col-span-1">
               <div className="flex items-center space-x-3 mb-6">
-                <div className="w-12 h-12 rounded-lg bg-primary/20 border-2 border-dashed border-primary/50 flex items-center justify-center neon-border hover:bg-primary/30 transition-colors">
-                  <span className="text-primary text-xs font-medium">LOGO</span>
+                <div className="relative w-12 h-12 rounded-lg bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-800 flex items-center justify-center neon-border overflow-hidden">
+                  {/* Animated Background Stars */}
+                  <div className="absolute inset-0 pointer-events-none z-0">
+                    <div className="absolute w-0.5 h-0.5 bg-yellow-300 rounded-full animate-pulse" style={{top: '20%', left: '30%'}} />
+                    <div className="absolute w-0.5 h-0.5 bg-white rounded-full animate-pulse delay-500" style={{top: '60%', left: '70%'}} />
+                    <div className="absolute w-0.5 h-0.5 bg-purple-200 rounded-full animate-pulse delay-1000" style={{top: '80%', left: '50%'}} />
+                  </div>
+                  
+                  {/* Central Star Symbol */}
+                  <div className="relative z-20">
+                    <div className="text-lg font-bold text-yellow-300 drop-shadow-lg">
+                      ✦
+                    </div>
+                  </div>
+                  
+                  {/* Subtle Glow Effect */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-yellow-400/10 via-transparent to-blue-400/10 rounded-lg pointer-events-none z-10" />
                 </div>
                 <span className="font-bold text-xl neon-text text-primary">
                   Jai Guru Astro Remedy
@@ -48,7 +63,9 @@ export default function Footer() {
               </p>
               <div className="flex space-x-4">
                 <a 
-                  href="#" 
+                  href="https://facebook.com/jaiguruastroremedy" 
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-10 h-10 bg-primary rounded-full flex items-center justify-center neon-border hover:scale-110 transition-transform"
                   data-testid="social-facebook"
                   aria-label="Facebook"
@@ -56,7 +73,9 @@ export default function Footer() {
                   <Facebook className="w-5 h-5 text-primary-foreground" />
                 </a>
                 <a 
-                  href="#" 
+                  href="https://twitter.com/jaiguruastro" 
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-10 h-10 bg-secondary rounded-full flex items-center justify-center hover:scale-110 transition-transform"
                   style={{ boxShadow: "0 0 20px var(--secondary)" }}
                   data-testid="social-twitter"
@@ -65,7 +84,9 @@ export default function Footer() {
                   <Twitter className="w-5 h-5 text-secondary-foreground" />
                 </a>
                 <a 
-                  href="#" 
+                  href="https://instagram.com/jaiguruastroremedy" 
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center neon-border hover:scale-110 transition-transform"
                   style={{ boxShadow: "0 0 20px #e91e63" }}
                   data-testid="social-instagram"
@@ -137,13 +158,17 @@ export default function Footer() {
                 <li className="text-muted-foreground text-sm">
                   <div className="flex items-center space-x-2">
                     <Mail className="w-4 h-4 text-primary" />
-                    <span>info@jaiguruastroremedy.com</span>
+                    <a href="mailto:info@jaiguruastroremedy.com" className="hover:text-primary transition-colors">
+                      info@jaiguruastroremedy.com
+                    </a>
                   </div>
                 </li>
                 <li className="text-muted-foreground text-sm">
                   <div className="flex items-center space-x-2">
                     <Phone className="w-4 h-4 text-secondary" />
-                    <span>+91 9999999999</span>
+                    <a href="tel:+919876543210" className="hover:text-secondary transition-colors">
+                      +91 98765-43210
+                    </a>
                   </div>
                 </li>
                 <li className="text-muted-foreground text-sm">
