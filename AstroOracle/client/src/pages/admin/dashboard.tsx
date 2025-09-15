@@ -282,24 +282,6 @@ export default function AdminDashboard() {
           </p>
         </div>
 
-        {/* SUPER SIMPLE NAVIGATION */}
-        <div style={{backgroundColor: '#ffff00', color: '#000000', padding: '30px', fontSize: '20px', textAlign: 'center', marginBottom: '30px'}}>
-          <h2>⚡ ADMIN SECTIONS ⚡</h2>
-          <div style={{marginTop: '20px'}}>
-            <a href="/admin/clients" style={{color: '#000000', fontSize: '18px', display: 'block', margin: '10px 0', padding: '15px', backgroundColor: '#ffffff', textDecoration: 'none', border: '2px solid #000000'}}>
-              CLIENT MANAGEMENT
-            </a>
-            <a href="/admin/consultations" style={{color: '#000000', fontSize: '18px', display: 'block', margin: '10px 0', padding: '15px', backgroundColor: '#ffffff', textDecoration: 'none', border: '2px solid #000000'}}>
-              CONSULTATIONS
-            </a>
-            <a href="/admin/courses" style={{color: '#000000', fontSize: '18px', display: 'block', margin: '10px 0', padding: '15px', backgroundColor: '#ffffff', textDecoration: 'none', border: '2px solid #000000'}}>
-              COURSE MANAGEMENT
-            </a>
-            <a href="/admin/products" style={{color: '#000000', fontSize: '18px', display: 'block', margin: '10px 0', padding: '15px', backgroundColor: '#ffffff', textDecoration: 'none', border: '2px solid #000000'}}>
-              PRODUCTS & ORDERS
-            </a>
-          </div>
-        </div>
 
         {/* Enhanced Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -326,29 +308,55 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-        {/* Quick Actions Grid - Glassmorphism Style */}
+        {/* Admin Navigation Cards - Prominent Management Center */}
         <div className="mb-8">
-          <h3 className="text-2xl font-bold text-foreground mb-6">Management Center</h3>
+          <h3 className="text-3xl font-bold neon-text text-primary mb-2">Admin Management Center</h3>
+          <p className="text-muted-foreground mb-8">Quick access to all administrative functions</p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {quickActions.map((action, index) => (
+            {quickActions.slice(0, 4).map((action, index) => (
               <a key={index} href={action.route}>
                 <GlassCard 
-                  className="p-6 cursor-pointer hover:scale-105 transition-all duration-300 group"
+                  className="p-8 cursor-pointer hover:scale-105 transition-all duration-300 group border-2 hover:border-primary/50"
                   data-testid={`quick-action-${index}`}
                 >
-                    <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${action.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                      <action.icon className="w-8 h-8 text-white" />
+                    <div className={`w-20 h-20 rounded-xl bg-gradient-to-br ${action.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                      <action.icon className="w-10 h-10 text-white" />
                     </div>
-                    <h4 className="font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                    <h4 className="font-bold text-lg text-foreground mb-3 group-hover:text-primary transition-colors">
                       {action.title}
                     </h4>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-muted-foreground leading-relaxed">
                       {action.description}
                     </p>
                   </GlassCard>
               </a>
             ))}
+          </div>
+          
+          {/* Additional Admin Tools */}
+          <div className="mt-8">
+            <h4 className="text-xl font-bold text-foreground mb-4">Additional Tools</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {quickActions.slice(4).map((action, index) => (
+                <a key={index + 4} href={action.route}>
+                  <GlassCard 
+                    className="p-6 cursor-pointer hover:scale-105 transition-all duration-300 group"
+                    data-testid={`additional-action-${index}`}
+                  >
+                      <div className={`w-16 h-16 rounded-xl bg-gradient-to-br ${action.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                        <action.icon className="w-8 h-8 text-white" />
+                      </div>
+                      <h4 className="font-bold text-foreground mb-2 group-hover:text-primary transition-colors">
+                        {action.title}
+                      </h4>
+                      <p className="text-sm text-muted-foreground">
+                        {action.description}
+                      </p>
+                    </GlassCard>
+                </a>
+              ))}
+            </div>
           </div>
         </div>
 
