@@ -8,6 +8,7 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import Login from "@/pages/auth/login";
 import Register from "@/pages/auth/register";
+import Auth from "@/pages/auth/auth";
 import Booking from "@/pages/booking";
 import Courses from "@/pages/courses";
 import Products from "@/pages/products";
@@ -35,14 +36,27 @@ import Footer from "@/components/layout/footer";
 import CosmicBackground from "@/components/layout/cosmic-background";
 import AIChatbot from "@/components/support/ai-chatbot";
 
+function LoginRedirect() {
+  const [, setLocation] = useLocation();
+  setLocation('/auth');
+  return null;
+}
+
+function RegisterRedirect() {
+  const [, setLocation] = useLocation();
+  setLocation('/auth/register');
+  return null;
+}
+
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/login" component={Login} />
-      <Route path="/auth/login" component={Login} />
-      <Route path="/register" component={Register} />
-      <Route path="/auth/register" component={Register} />
+      <Route path="/auth" component={Auth} />
+      <Route path="/login" component={LoginRedirect} />
+      <Route path="/register" component={RegisterRedirect} />
+      <Route path="/auth/login" component={Auth} />
+      <Route path="/auth/register" component={Auth} />
       <Route path="/booking" component={Booking} />
       <Route path="/courses" component={Courses} />
       <Route path="/home-tuition" component={HomeTuition} />

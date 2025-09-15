@@ -174,7 +174,7 @@ export default function Navigation() {
               </div>
             ) : (
               <div className="flex items-center space-x-4">
-                <Link href="/register">
+                <Link href="/auth">
                   <Button variant="outline" size="sm" className="text-foreground border-primary/30 hover:bg-primary/10" data-testid="login-button">
                     <User className="w-4 h-4 mr-2" />
                     {t("login")}
@@ -249,11 +249,10 @@ export default function Navigation() {
                     </>
                   ) : (
                     <>
-                      <Link href="/register" className="block" onClick={() => setIsMobileMenuOpen(false)}>
+                      <Link href="/auth" className="block" onClick={() => setIsMobileMenuOpen(false)}>
                         <Button variant="outline" className="w-full text-foreground border-primary/30 hover:bg-primary/10" data-testid="mobile-login-button">
                           <User className="w-4 h-4 mr-2" />
                           {t("login")}
-                          Login
                         </Button>
                       </Link>
                       <Link href="/booking" className="block" onClick={() => setIsMobileMenuOpen(false)}>
