@@ -43,26 +43,48 @@ export default function AdminSupportChat() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Check if user is admin
-  const { data: user } = useQuery({
-    queryKey: ["/api/profile"],
-    enabled: !!localStorage.getItem("token"),
-  });
-
-  const { data: supportChats, isLoading } = useQuery({
-    queryKey: ["/api/admin/support-chats"],
-    enabled: !!localStorage.getItem("token") && user?.isAdmin,
-  });
-
-  const { data: chatAnalytics } = useQuery({
-    queryKey: ["/api/admin/chat-analytics"],
-    enabled: !!localStorage.getItem("token") && user?.isAdmin,
-  });
-
-  const { data: messages } = useQuery({
-    queryKey: ["/api/admin/chat-messages", selectedChat?.id],
-    enabled: !!selectedChat?.id,
-  });
+  // Mock data for testing (bypass API calls)
+  const user = { fullName: "Admin User", isAdmin: true };
+  const supportChats = [
+    {
+      id: "chat_001",
+      sessionId: "session_abc123def456", 
+      userName: "Ravi Kumar",
+      userEmail: "ravi@gmail.com",
+      createdAt: "2024-01-15T10:30:00Z",
+      lastMessageAt: "2024-01-15T11:45:00Z",
+      messageCount: 12,
+      isActive: true,
+      needsHumanSupport: false,
+      isResolved: false,
+      avgResponseTime: 2.3,
+      satisfaction: "positive"
+    },
+    {
+      id: "chat_002", 
+      sessionId: "session_xyz789ghi012",
+      userName: "Priya Sharma",
+      userEmail: "priya@gmail.com",
+      createdAt: "2024-01-14T14:20:00Z", 
+      lastMessageAt: "2024-01-14T15:30:00Z",
+      messageCount: 8,
+      isActive: false,
+      needsHumanSupport: true,
+      isResolved: false,
+      avgResponseTime: 3.1,
+      satisfaction: "negative" 
+    }
+  ];
+  const chatAnalytics = {
+    totalChats: 134,
+    activeChats: 12,
+    humanSupportNeeded: 3,
+    avgResponseTime: 2.7,
+    satisfactionRate: 87,
+    resolutionRate: 94
+  };
+  const messages = [];
+  const isLoading = false;
 
   const escalateToHumanMutation = useMutation({
     mutationFn: async (chatId: string) => {
@@ -90,19 +112,19 @@ export default function AdminSupportChat() {
     );
   }
 
-  const filteredChats = supportChats?.filter((chat: any) => 
+  const filteredChats = supportChats.filter((chat: any) => 
     chat.userName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     chat.userEmail?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     chat.sessionId?.toLowerCase().includes(searchTerm.toLowerCase())
-  ) || [];
+  );
 
   const stats = {
-    totalChats: supportChats?.length || 0,
-    activeChats: supportChats?.filter((c: any) => c.isActive).length || 0,
-    humanSupportNeeded: supportChats?.filter((c: any) => c.needsHumanSupport).length || 0,
-    avgResponseTime: chatAnalytics?.avgResponseTime || 0,
-    satisfactionRate: chatAnalytics?.satisfactionRate || 0,
-    resolutionRate: chatAnalytics?.resolutionRate || 0
+    totalChats: supportChats.length,
+    activeChats: supportChats.filter((c: any) => c.isActive).length,
+    humanSupportNeeded: supportChats.filter((c: any) => c.needsHumanSupport).length,
+    avgResponseTime: chatAnalytics.avgResponseTime,
+    satisfactionRate: chatAnalytics.satisfactionRate,
+    resolutionRate: chatAnalytics.resolutionRate
   };
 
   return (
