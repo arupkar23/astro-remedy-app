@@ -173,8 +173,9 @@ export default function AdminFAQs() {
           </div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   return (
     <div className="min-h-screen pt-16 pb-16">

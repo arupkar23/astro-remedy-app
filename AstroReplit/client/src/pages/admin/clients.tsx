@@ -719,6 +719,36 @@ export default function AdminClients() {
             )}
           </GlassCard>
         )}
+
+        {/* Client Statistics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
+          <GlassCard className="p-6 text-center">
+            <div className="text-2xl font-bold text-black bg-white/90 px-2 py-1 rounded-md inline-block mb-2">
+              {filteredClients.filter((client: any) => client.isVerified).length}
+            </div>
+            <div className="text-sm text-muted-foreground">Verified Clients</div>
+          </GlassCard>
+          <GlassCard className="p-6 text-center">
+            <div className="text-2xl font-bold text-black bg-white/90 px-2 py-1 rounded-md inline-block mb-2">
+              {filteredClients.filter((client: any) => client.dateOfBirth).length}
+            </div>
+            <div className="text-sm text-muted-foreground">Complete Profiles</div>
+          </GlassCard>
+          <GlassCard className="p-6 text-center">
+            <div className="text-2xl font-bold text-black bg-white/90 px-2 py-1 rounded-md inline-block mb-2">
+              {filteredClients.filter((client: any) => 
+                new Date(client.createdAt) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+              ).length}
+            </div>
+            <div className="text-sm text-muted-foreground">New This Month</div>
+          </GlassCard>
+          <GlassCard className="p-6 text-center">
+            <div className="text-2xl font-bold text-black bg-white/90 px-2 py-1 rounded-md inline-block mb-2">
+              1
+            </div>
+            <div className="text-sm text-muted-foreground">Languages</div>
+          </GlassCard>
+        </div>
       </div>
     </div>
   );
