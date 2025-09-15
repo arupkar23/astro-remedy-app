@@ -84,7 +84,10 @@ export default function Register() {
   // OTP Sending Mutation
   const sendOtpMutation = useMutation({
     mutationFn: async (phoneData: { countryCode: string; phoneNumber: string }) => {
-      const response = await apiRequest("POST", "/api/auth/send-otp", phoneData);
+      const response = await apiRequest("POST", "/api/auth/send-otp", {
+        ...phoneData,
+        purpose: "registration"
+      });
       return response.json();
     },
     onSuccess: () => {
@@ -256,14 +259,23 @@ export default function Register() {
     if (!validateStep3()) return;
 
     const registerData = {
+      step: 4,
+      agreements: {
+        terms: formData.agreedToTerms,
+        privacy: formData.agreedToPrivacy,
+        disclaimer: formData.agreedToDisclaimer,
+        returnPolicy: formData.agreedToReturnPolicy,
+        dataProcessing: formData.dataProcessingConsent,
+        marketing: formData.marketingConsent,
+      },
       username: formData.username,
-      email: formData.email,
+      email: formData.email || "",
       password: formData.password,
       fullName: formData.fullName,
       phoneNumber: formData.phoneNumber,
       countryCode: formData.countryCode,
       whatsappNumber: formData.whatsappNumber || formData.phoneNumber,
-      dateOfBirth: formData.dateOfBirth ? new Date(formData.dateOfBirth) : null,
+      dateOfBirth: formData.dateOfBirth,
       timeOfBirth: formData.timeOfBirth,
       placeOfBirth: formData.placeOfBirth,
       preferredLanguage: formData.preferredLanguage,
@@ -454,7 +466,6 @@ export default function Register() {
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="Enter your email address"
                       className="form-input pl-10"
-                      required
                       data-testid="email-input"
                     />
                   </div>

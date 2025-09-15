@@ -38,7 +38,7 @@ export default function Login() {
   // Send OTP Mutation for Mobile + OTP login
   const sendLoginOtpMutation = useMutation({
     mutationFn: async (phoneData: { countryCode: string; phoneNumber: string }) => {
-      const response = await apiRequest("POST", "/api/auth/send-login-otp", { 
+      const response = await apiRequest("POST", "/api/auth/send-otp", { 
         ...phoneData, 
         purpose: "login" 
       });
