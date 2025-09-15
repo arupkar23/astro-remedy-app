@@ -28,16 +28,12 @@ outputType = "webview"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "cd AstroReplit && JWT_SECRET=\"your-secret-key-replace-in-production\" NODE_ENV=production npm start"
+args = "cd AstroOracle && NODE_ENV=production npm start"
 waitForPort = 5000
 
 [[ports]]
 localPort = 5000
 externalPort = 80
-
-[[ports]]
-localPort = 41597
-externalPort = 3000
 
 [deployment]
 deploymentTarget = "autoscale"
