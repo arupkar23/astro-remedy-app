@@ -1,0 +1,84 @@
+2. User Authentication & Security (Admin and Client/Astrology student Accounts): All global phone codes [ all possible countries of world , by default code  display = +91 ( India ) ]should be available during sign up or sign in. Give maximum no. of mobile country code 
+1. User Identification Strategy
+Primary Identifier: Unique User ID (auto-generated UUID)	
+Secondary Identifiers:
+Mobile number (verification required)
+Email (optional, for recovery)
+Government ID (Aadhaar/Passport - for high-risk actions)
+2. Registration Flow
+User enters:
+Mobile number (mandatory)
+Email (optional)
+Password (strong requirements)
+System sends OTP to mobile
+Upon verification:
+Generate unique User ID
+Store hashed password
+Mark mobile as verified
+Create user profile
+3. Login Options
+Option A: Mobile + OTP
+Option B: User ID + Password
+Option C: Mobile + Password
+4. Mobile Number Change Process
+User requests mobile number change
+System requires:
+Current password
+OTP to old number (if available)
+OTP to new number
+7-day holding period before old number is released
+Notify all connected devices/emails about the change
+5. Lost Mobile Protection
+Temporary Account Freeze:
+User reports lost mobile
+Account enters "recovery mode"
+Require email verification + security questions
+Mobile Number Recycling Protection:
+30-day quarantine for released numbers
+Require additional verification for recycled numbers
+Flag potential number reuse for manual review
+6. Legal Compliance Features
+Audit Logging:
+All authentication attempts
+Profile changes
+Device/IP tracking
+Data Retention:
+Keep logs for required legal period
+Anonymize data where possible
+Consent Management:
+Clear terms of service
+Data usage policies
+Right to be forgotten
+7. Security Measures
+Rate limiting on login attempts
+Suspicious activity detection
+Multi-factor authentication options
+Session management
+Regular security audits
+Implementation Recommendation
+Database Schema:
+Users table (UserID, HashedPassword, Status)
+User_Contacts (UserID, Mobile, Email, IsVerified, IsPrimary)
+Auth_Logs (Timestamp, UserID, IP, Device, Action, Status)
+Security_Events (UserID, EventType, Details, Timestamp)
+Tech Stack:
+Backend: Node.js with Express
+Database: PostgreSQL/MongoDB
+OTP Service: Twilio
+Security: JWT, bcrypt, rate limiting
+
+
+Secure Data Handling: All user data (personal information, consultation records, learning progress, order history) must be encrypted both in transit (SSL/TLS for all communication) and at rest (database encryption). Implement "Privacy by Design" principles from the outset, adhering strictly to relevant international data protection laws (e.g., GDPR, CCPA) in addition to Indian regulations.
+Session Management: Implement secure session management to prevent unauthorized access and session hijacking.
+Detailed Audit Logging (for Legal Compliance):
+Log all critical actions by both Admin and Clients/Students:
+.
+Acceptance of legal policies (Terms of Service, Privacy Policy, Disclaimer, Return Policy) with timestamps and associated IP addresses and taking consent where applicable throughout the application. Disclaimer & any other legal document required for my global business.( Do this at the end of project, otherwise you have to edit it again and again.keep it in your memory). 
+Remember one point –Clients /students will not be able to cancel booking /purchashed courses/buy /ordered anything . Clients only can rebook appointment for online/offline consultation, when Astrologer will cancel any booked appointment from admin dashboard due to unavoidable reason. This point should be included in legal document of application.
+Remember –  Astrologer Arup Shastri will not allow return of  products/services/hard copy of horoscope . Disclaimer & any other legal document required for my global business.
+
+Consultation booking, start/end times, payment status.
+Course enrollment, lesson completion, quiz attempts.
+Product purchases, shipping status updates, return requests, and their processing.
+Any data modifications or deletions.
+Logs must be tamper-proof, time-stamped, and securely stored to provide a comprehensive audit trail for potential legal disputes in court.
