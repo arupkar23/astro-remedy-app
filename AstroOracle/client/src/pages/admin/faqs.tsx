@@ -173,8 +173,7 @@ export default function AdminFAQs() {
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
   }
 
   return (
@@ -574,6 +573,7 @@ export default function AdminFAQs() {
           )}
         </DialogContent>
       </Dialog>
+      </div>
     </div>
   );
 }
