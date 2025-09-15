@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Eye, EyeOff, User, Mail, Phone, Lock, Calendar, MapPin, Shield, Smartphone, FileText, AlertTriangle } from "lucide-react";
+import { AnimatedLogo } from "@/components/ui/animated-logo";
 import { useToast } from "@/hooks/use-toast";
 // AutoTranslate import removed for fast loading
 import { apiRequest } from "@/lib/queryClient";
@@ -142,7 +143,7 @@ export default function Register() {
   ];
 
   const validateStep1 = () => {
-    if (!formData.username || !formData.password || !formData.confirmPassword || !formData.fullName) {
+    if (!formData.username || !formData.password || !formData.confirmPassword || !formData.fullName || !formData.phoneNumber) {
       toast({
         title: "Validation Error",
         description: "Please fill in all required fields (email is optional for recovery)",
@@ -370,9 +371,7 @@ export default function Register() {
         <GlassCard className="p-8">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="w-16 h-16 rounded-lg bg-primary flex items-center justify-center neon-border mx-auto mb-4">
-              <span className="text-primary-foreground font-bold text-2xl">JG</span>
-            </div>
+            <AnimatedLogo />
             <h1 className="text-3xl font-bold neon-text text-primary mb-2" data-testid="register-title">
               Create Account
             </h1>
@@ -450,6 +449,44 @@ export default function Register() {
                       required
                       data-testid="username-input"
                     />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="space-y-2">
+                    <Label className="text-foreground">Country Code *</Label>
+                    <Select
+                      value={formData.countryCode}
+                      onValueChange={(value) => setFormData({ ...formData, countryCode: value })}
+                    >
+                      <SelectTrigger className="form-input text-xs">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="glass-card max-h-60 overflow-y-auto">
+                        {globalPhoneCodes.map((code) => (
+                          <SelectItem key={code.value} value={code.value} className="text-xs">
+                            {code.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="col-span-2 space-y-2">
+                    <Label htmlFor="phoneNumber" className="text-foreground">
+                      Mobile Number *
+                    </Label>
+                    <div className="relative">
+                      <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                      <Input
+                        id="phoneNumber"
+                        value={formData.phoneNumber}
+                        onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+                        placeholder="Your mobile number"
+                        className="form-input pl-10"
+                        required
+                        data-testid="phone-input"
+                      />
+                    </div>
                   </div>
                 </div>
 
