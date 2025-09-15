@@ -136,10 +136,10 @@ export default function Register() {
   ];
 
   const validateStep1 = () => {
-    if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword || !formData.fullName) {
+    if (!formData.username || !formData.password || !formData.confirmPassword || !formData.fullName) {
       toast({
         title: "Validation Error",
-        description: "Please fill in all required fields",
+        description: "Please fill in all required fields (email is optional)",
         variant: "destructive",
       });
       return false;
@@ -360,7 +360,7 @@ export default function Register() {
 
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-foreground">
-                    Email Address *
+                    Email Address (Optional)
                   </Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />

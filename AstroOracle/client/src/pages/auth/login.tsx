@@ -229,8 +229,8 @@ export default function Login() {
               >
                 <User className="w-4 h-4" />
                 <div>
-                  <div className="font-medium">User ID + Password</div>
-                  <div className="text-xs opacity-70">Quick login</div>
+                  <div className="font-medium">UUID + Password</div>
+                  <div className="text-xs opacity-70">Primary identifier authentication</div>
                 </div>
               </Button>
               
@@ -348,7 +348,7 @@ export default function Login() {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="userId" className="text-foreground">
-                    User ID *
+                    UUID (Primary Identifier) *
                   </Label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -357,12 +357,15 @@ export default function Login() {
                       type="text"
                       value={formData.userId}
                       onChange={(e) => setFormData({ ...formData, userId: e.target.value })}
-                      placeholder="Enter your unique User ID"
+                      placeholder="Enter your UUID (e.g., 123e4567-e89b-12d3-a456-426614174000)"
                       className="form-input pl-10"
                       required
-                      data-testid="userid-input"
+                      data-testid="uuid-input"
                     />
                   </div>
+                  <p className="text-xs text-muted-foreground">
+                    Your unique UUID identifier provided during registration
+                  </p>
                 </div>
 
                 <div className="space-y-2">
