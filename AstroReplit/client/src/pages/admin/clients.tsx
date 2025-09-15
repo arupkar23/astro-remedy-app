@@ -76,123 +76,50 @@ export default function AdminClients() {
   const [timezones, setTimezones] = useState<string[]>([]);
   const queryClient = useQueryClient();
 
-  // Enhanced mock data with comprehensive client profiles
-  const clients: ClientProfile[] = [
-    {
-      id: "1",
-      fullName: "Ravi Kumar",
-      dateOfBirth: "1985-06-15",
-      timeOfBirth: "10:30 AM",
-      placeOfBirth: {
-        city: "Mumbai",
-        state: "Maharashtra", 
-        country: "India",
-        timezone: "Asia/Kolkata"
-      },
-      email: "ravi.kumar@email.com",
-      primaryPhone: "+91-9876543210",
-      currentPhone: "+91-9876543210",
-      whatsappNumber: "+91-9876543210",
-      personalNotes: "Interested in career guidance. Prefers Hindi consultations. Regular client since 2023.",
-      consultationHistory: [
-        {
-          id: "c1",
-          type: "video",
-          date: "2024-01-15T10:00:00Z",
-          duration: 60,
-          status: "completed",
-          amount: 2500,
-          notes: "Career guidance session - discussed job change prospects"
-        },
-        {
-          id: "c2",
-          type: "audio",
-          date: "2024-02-10T14:30:00Z",
-          duration: 45,
-          status: "completed",
-          amount: 2000,
-          notes: "Follow-up session on relationship matters"
-        }
-      ],
-      orderHistory: [
-        {
-          id: "o1",
-          productName: "Blue Sapphire Ring",
-          amount: 15000,
-          date: "2024-01-20T00:00:00Z",
-          status: "delivered"
-        }
-      ],
-      documents: [
-        {
-          id: "d1",
-          name: "Birth Chart Analysis.pdf",
-          type: "horoscope",
-          uploadDate: "2024-01-16T00:00:00Z",
-          fileUrl: "/documents/ravi_birth_chart.pdf"
-        }
-      ],
-      createdAt: "2023-12-01T00:00:00Z",
-      lastUpdated: "2024-02-15T00:00:00Z"
+  // Fetch clients from API with search functionality
+  const { data: clientsData, isLoading, refetch } = useQuery({
+    queryKey: ['clients', searchTerm],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      if (searchTerm) params.append('search', searchTerm);
+      
+      const response = await fetch(`/api/clients?${params.toString()}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch clients');
+      }
+      return response.json();
     },
-    {
-      id: "2",
-      fullName: "Priya Sharma",
-      dateOfBirth: "1990-03-22",
-      timeOfBirth: "2:15 PM",
-      placeOfBirth: {
-        city: "Delhi",
-        state: "Delhi",
-        country: "India",
-        timezone: "Asia/Kolkata"
-      },
-      email: "priya.sharma@email.com",
-      primaryPhone: "+91-9876543211",
-      currentPhone: "+91-9876543211",
-      whatsappNumber: "+91-8765432109",
-      personalNotes: "New mother seeking guidance on child's future. Prefers evening consultations due to work schedule.",
-      consultationHistory: [
-        {
-          id: "c3",
-          type: "chat",
-          date: "2024-01-20T19:00:00Z",
-          duration: 30,
-          status: "completed",
-          amount: 1500,
-          notes: "Initial consultation about newborn's horoscope"
-        }
-      ],
-      orderHistory: [
-        {
-          id: "o2",
-          productName: "Child Protection Amulet",
-          amount: 3500,
-          date: "2024-01-25T00:00:00Z",
-          status: "delivered"
-        }
-      ],
-      documents: [
-        {
-          id: "d2",
-          name: "Child Birth Chart.pdf",
-          type: "horoscope",
-          uploadDate: "2024-01-22T00:00:00Z",
-          fileUrl: "/documents/priya_child_chart.pdf"
-        }
-      ],
-      createdAt: "2024-01-15T00:00:00Z",
-      lastUpdated: "2024-01-25T00:00:00Z"
-    }
-  ];
-  const isLoading = false;
+    refetchOnWindowFocus: false,
+  });
 
-  // Fetch timezone data on component mount
+  const clients = clientsData?.clients || [];
+
+  // Fetch timezone data from API
   useEffect(() => {
-    // Mock timezone data - in real implementation, this would come from timezone API
-    setTimezones([
-      "Asia/Kolkata", "America/New_York", "Europe/London", "Asia/Tokyo",
-      "Australia/Sydney", "America/Los_Angeles", "Europe/Paris", "Asia/Dubai"
-    ]);
+    const fetchTimezones = async () => {
+      try {
+        const response = await fetch('/api/timezone/list');
+        if (response.ok) {
+          const data = await response.json();
+          setTimezones(data.timezones.map((tz: any) => tz.value));
+        } else {
+          // Fallback to static list
+          setTimezones([
+            "Asia/Kolkata", "America/New_York", "Europe/London", "Asia/Tokyo",
+            "Australia/Sydney", "America/Los_Angeles", "Europe/Paris", "Asia/Dubai"
+          ]);
+        }
+      } catch (error) {
+        console.error('Error fetching timezones:', error);
+        // Fallback to static list
+        setTimezones([
+          "Asia/Kolkata", "America/New_York", "Europe/London", "Asia/Tokyo",
+          "Australia/Sydney", "America/Los_Angeles", "Europe/Paris", "Asia/Dubai"
+        ]);
+      }
+    };
+
+    fetchTimezones();
   }, []);
 
   const filteredClients = clients?.filter((client: ClientProfile) => 
@@ -205,9 +132,23 @@ export default function AdminClients() {
 
   const addClientMutation = useMutation({
     mutationFn: async (clientData: Partial<ClientProfile>) => {
-      // In real implementation, this would call the API
-      console.log('Adding client:', clientData);
-      return { success: true };
+      const response = await fetch('/api/clients', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...clientData,
+          phoneNumber: clientData.primaryPhone, // Map to backend field
+        }),
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to create client');
+      }
+      
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clients'] });
@@ -220,9 +161,59 @@ export default function AdminClients() {
     addClientMutation.mutate(newClient);
   };
 
-  const getTotalSpent = (client: ClientProfile) => {
-    const consultationTotal = client.consultationHistory.reduce((sum, c) => sum + c.amount, 0);
-    const orderTotal = client.orderHistory.reduce((sum, o) => sum + o.amount, 0);
+  // Auto-detect timezone when place of birth changes
+  const handlePlaceOfBirthChange = async (field: string, value: string) => {
+    const updatedPlace = {
+      ...newClient.placeOfBirth,
+      [field]: value,
+    };
+    
+    setNewClient({
+      ...newClient,
+      placeOfBirth: updatedPlace,
+    });
+
+    // Auto-detect timezone if we have city and country
+    if (field === 'city' || field === 'country') {
+      if (updatedPlace.city && updatedPlace.country) {
+        try {
+          const response = await fetch('/api/timezone/detect', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              city: updatedPlace.city,
+              state: updatedPlace.state,
+              country: updatedPlace.country,
+            }),
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success && data.location) {
+              setNewClient({
+                ...newClient,
+                placeOfBirth: {
+                  city: data.location.city,
+                  state: data.location.state,
+                  country: data.location.country,
+                  timezone: data.location.timezone,
+                },
+              });
+            }
+          }
+        } catch (error) {
+          console.error('Error detecting timezone:', error);
+        }
+      }
+    }
+  };
+
+  const getTotalSpent = (client: any) => {
+    if (!client.consultationHistory || !client.orderHistory) return 0;
+    const consultationTotal = client.consultationHistory.reduce((sum: number, c: any) => sum + (c.amount || 0), 0);
+    const orderTotal = client.orderHistory.reduce((sum: number, o: any) => sum + (o.amount || 0), 0);
     return consultationTotal + orderTotal;
   };
 
@@ -360,15 +351,7 @@ export default function AdminClients() {
                       <Input
                         id="city"
                         value={newClient.placeOfBirth?.city || ''}
-                        onChange={(e) => setNewClient({
-                          ...newClient, 
-                          placeOfBirth: {
-                            city: e.target.value,
-                            state: newClient.placeOfBirth?.state || '',
-                            country: newClient.placeOfBirth?.country || '',
-                            timezone: newClient.placeOfBirth?.timezone || ''
-                          }
-                        })}
+                        onChange={(e) => handlePlaceOfBirthChange('city', e.target.value)}
                         placeholder="Enter city"
                       />
                     </div>
@@ -394,15 +377,7 @@ export default function AdminClients() {
                       <Input
                         id="country"
                         value={newClient.placeOfBirth?.country || ''}
-                        onChange={(e) => setNewClient({
-                          ...newClient, 
-                          placeOfBirth: {
-                            city: newClient.placeOfBirth?.city || '',
-                            state: newClient.placeOfBirth?.state || '',
-                            country: e.target.value,
-                            timezone: newClient.placeOfBirth?.timezone || ''
-                          }
-                        })}
+                        onChange={(e) => handlePlaceOfBirthChange('country', e.target.value)}
                         placeholder="Enter country"
                       />
                     </div>

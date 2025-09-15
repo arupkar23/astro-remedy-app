@@ -3,8 +3,37 @@ import { db } from "../db";
 import { users, consultations, orders, auditLogs } from "@shared/schema";
 import { eq, like, or, desc, asc, sql } from "drizzle-orm";
 import { z } from "zod";
+import bcrypt from "bcrypt";
 
 const router = Router();
+
+// JWT Secret (should match main routes.ts)
+const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
+
+// Authentication middleware (imported from main routes)
+const authenticateToken = (req: any, res: any, next: any) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) {
+    return res.sendStatus(401);
+  }
+
+  const jwt = require('jsonwebtoken');
+  jwt.verify(token, JWT_SECRET, (err: any, user: any) => {
+    if (err) return res.sendStatus(403);
+    req.user = user;
+    next();
+  });
+};
+
+// Admin-only middleware
+const requireAdmin = (req: any, res: any, next: any) => {
+  if (!req.user?.isAdmin) {
+    return res.status(403).json({ message: "Admin access required" });
+  }
+  next();
+};
 
 // Enhanced Client Profile Schema for validation
 const ClientProfileSchema = z.object({
@@ -25,8 +54,8 @@ const ClientProfileSchema = z.object({
   notes: z.string().optional(), // Personal notes from astrologer
 });
 
-// GET /api/clients - List all clients with search and filtering
-router.get("/", async (req, res) => {
+// GET /api/clients - List all clients with search and filtering (ADMIN ONLY)
+router.get("/", authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { search, page = 1, limit = 20, sortBy = "createdAt", sortOrder = "desc" } = req.query;
     
@@ -85,8 +114,8 @@ router.get("/", async (req, res) => {
   }
 });
 
-// GET /api/clients/:id - Get specific client with consultation and order history
-router.get("/:id", async (req, res) => {
+// GET /api/clients/:id - Get specific client with consultation and order history (ADMIN ONLY)
+router.get("/:id", authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -184,8 +213,8 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// POST /api/clients - Create new client
-router.post("/", async (req, res) => {
+// POST /api/clients - Create new client (ADMIN ONLY)
+router.post("/", authenticateToken, requireAdmin, async (req, res) => {
   try {
     const validatedData = ClientProfileSchema.parse(req.body);
 
@@ -201,6 +230,10 @@ router.post("/", async (req, res) => {
       });
     }
 
+    // Generate secure random password and hash it
+    const randomPassword = `${Math.random().toString(36).slice(-8)}${Math.random().toString(36).slice(-8)}`;
+    const hashedPassword = await bcrypt.hash(randomPassword, 12);
+
     // Create new client
     const [newClient] = await db.insert(users).values({
       fullName: validatedData.fullName,
@@ -212,7 +245,7 @@ router.post("/", async (req, res) => {
       timeOfBirth: validatedData.timeOfBirth,
       placeOfBirth: validatedData.placeOfBirth ? JSON.stringify(validatedData.placeOfBirth) : null,
       notes: validatedData.notes,
-      password: "temp_password_" + Date.now(), // Temporary password
+      password: hashedPassword, // Securely hashed password
       username: `client_${Date.now()}`, // Auto-generated username
       isAdmin: false,
       isVerified: false,
@@ -246,8 +279,8 @@ router.post("/", async (req, res) => {
   }
 });
 
-// PUT /api/clients/:id - Update client profile
-router.put("/:id", async (req, res) => {
+// PUT /api/clients/:id - Update client profile (ADMIN ONLY)
+router.put("/:id", authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
     const validatedData = ClientProfileSchema.partial().parse(req.body);
@@ -323,8 +356,8 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// DELETE /api/clients/:id - Soft delete client (set account status to suspended)
-router.delete("/:id", async (req, res) => {
+// DELETE /api/clients/:id - Soft delete client (ADMIN ONLY)
+router.delete("/:id", authenticateToken, requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -359,8 +392,8 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-// GET /api/clients/stats/summary - Get client statistics for dashboard
-router.get("/stats/summary", async (req, res) => {
+// GET /api/clients/stats/summary - Get client statistics for dashboard (ADMIN ONLY)
+router.get("/stats/summary", authenticateToken, requireAdmin, async (req, res) => {
   try {
     // Total clients
     const [{ count: totalClients }] = await db.select({ 
