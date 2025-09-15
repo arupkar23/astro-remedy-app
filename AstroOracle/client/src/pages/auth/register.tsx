@@ -145,7 +145,7 @@ export default function Register() {
     if (!formData.username || !formData.password || !formData.confirmPassword || !formData.fullName) {
       toast({
         title: "Validation Error",
-        description: "Please fill in all required fields (email is optional)",
+        description: "Please fill in all required fields (email is optional for recovery)",
         variant: "destructive",
       });
       return false;
@@ -455,7 +455,7 @@ export default function Register() {
 
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-foreground">
-                    Email Address (Optional)
+                    Email Address (optional for recovery)
                   </Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />

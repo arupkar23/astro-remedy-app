@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Eye, EyeOff, User, Lock, Mail, Phone, Smartphone, Shield, AlertCircle } from "lucide-react";
+import { AnimatedLogo } from "@/components/ui/animated-logo";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 // AutoTranslate import removed for fast loading
@@ -183,9 +184,7 @@ export default function Login() {
         <GlassCard className="p-8">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="w-16 h-16 rounded-lg bg-primary flex items-center justify-center neon-border mx-auto mb-4">
-              <span className="text-primary-foreground font-bold text-2xl">JG</span>
-            </div>
+            <AnimatedLogo />
             <h1 className="text-3xl font-bold neon-text text-primary mb-2" data-testid="login-title">
               Sign In to Your Account
             </h1>
@@ -307,7 +306,7 @@ export default function Login() {
                       type="button"
                       onClick={sendOtp}
                       disabled={!formData.phoneNumber || sendLoginOtpMutation.isPending}
-                      className="w-full glass"
+                      className="w-full bg-primary text-primary-foreground hover:bg-primary/90 font-medium"
                       data-testid="send-login-otp-button"
                     >
                       {sendLoginOtpMutation.isPending ? "Sending..." : "Send Login Code"}
@@ -592,38 +591,6 @@ export default function Login() {
             </p>
           </div>
 
-          {/* Demo Access */}
-          <div className="mt-6 p-4 glass rounded-lg">
-            <p className="text-xs text-muted-foreground text-center mb-3">
-              Demo Access (For Testing)
-            </p>
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <Button
-                variant="outline"
-                size="sm"
-                className="glass"
-                onClick={() => {
-                  setLoginMethod("userid_password");
-                  setFormData({ ...formData, userId: "admin", password: "admin123" });
-                }}
-                data-testid="admin-demo-button"
-              >
-                Admin Demo
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="glass"
-                onClick={() => {
-                  setLoginMethod("userid_password");
-                  setFormData({ ...formData, userId: "demo", password: "demo123" });
-                }}
-                data-testid="user-demo-button"
-              >
-                User Demo
-              </Button>
-            </div>
-          </div>
         </GlassCard>
 
       </div>
