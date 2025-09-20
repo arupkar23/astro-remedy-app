@@ -1,3 +1,4 @@
+// File: AstroOracle/client/src/App.tsx
 import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -35,6 +36,7 @@ import Navigation from "@/components/layout/navigation";
 import Footer from "@/components/layout/footer";
 import CosmicBackground from "@/components/layout/cosmic-background";
 import AIChatbot from "@/components/support/ai-chatbot";
+import { SpeedInsights } from '@vercel/speed-insights/react'; // <-- ADDED THIS LINE
 
 function LoginRedirect() {
   const [, setLocation] = useLocation();
@@ -107,6 +109,7 @@ function App() {
             {!isAdminRoute && <Footer />}
             <AIChatbot />
             <Toaster />
+            <SpeedInsights /> {/* <-- ADDED THIS LINE */}
           </div>
         </LanguageProvider>
       </TooltipProvider>
